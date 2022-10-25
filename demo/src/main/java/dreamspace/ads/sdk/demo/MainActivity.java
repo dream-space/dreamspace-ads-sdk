@@ -1,8 +1,10 @@
-package android.ads.sdk.demo;
+package dreamspace.ads.sdk.demo;
 
-import android.ads.sdk.AdConfig;
-import android.ads.sdk.AdNetwork;
-import android.ads.sdk.data.AdNetworkType;
+import dreamspace.ads.sdk.AdConfig;
+import dreamspace.ads.sdk.AdNetwork;
+import dreamspace.ads.sdk.data.AdNetworkType;
+
+import dreamspace.ads.sdk.demo.R;
 import android.os.Bundle;
 import android.widget.Button;
 

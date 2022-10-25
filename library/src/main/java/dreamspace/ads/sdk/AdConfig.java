@@ -1,6 +1,6 @@
-package android.ads.sdk;
+package dreamspace.ads.sdk;
 
-import android.ads.sdk.data.AdNetworkType;
+import dreamspace.ads.sdk.data.AdNetworkType;
 
 import java.io.Serializable;
 

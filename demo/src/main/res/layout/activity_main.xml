@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:paddingVertical="20dp"
-    tools:context=".MainActivity">
+    tools:context="dreamspace.ads.sdk.demo.MainActivity">
 
     <LinearLayout
         android:id="@+id/banner_admob"

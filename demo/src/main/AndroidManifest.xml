@@ -20,7 +20,7 @@
             android:value="@string/admob_app_id" />
 
         <activity
-            android:name=".MainActivity"
+            android:name="dreamspace.ads.sdk.demo.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

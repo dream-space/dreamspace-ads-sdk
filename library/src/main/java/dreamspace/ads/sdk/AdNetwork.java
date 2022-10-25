@@ -1,11 +1,11 @@
-package android.ads.sdk;
+package dreamspace.ads.sdk;
 
 import static com.facebook.ads.AdSettings.IntegrationErrorMode.INTEGRATION_ERROR_CALLBACK_MODE;
 
-import android.ads.sdk.data.AdNetworkType;
-import android.ads.sdk.data.SharedPref;
-import android.ads.sdk.gdpr.LegacyGDPR;
-import android.ads.sdk.listener.AdBannerListener;
+import dreamspace.ads.sdk.data.AdNetworkType;
+import dreamspace.ads.sdk.data.SharedPref;
+import dreamspace.ads.sdk.gdpr.LegacyGDPR;
+import dreamspace.ads.sdk.listener.AdBannerListener;
 import android.app.Activity;
 import android.content.Context;
 import android.util.DisplayMetrics;
@@ -27,7 +27,6 @@ import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.interstitial.InterstitialAd;

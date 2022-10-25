@@ -1,4 +1,4 @@
-package android.ads.sdk.data;
+package dreamspace.ads.sdk.data;
 
 import android.content.Context;
 import android.content.SharedPreferences;
