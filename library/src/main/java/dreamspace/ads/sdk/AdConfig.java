@@ -27,4 +27,7 @@ public class AdConfig implements Serializable {
     public static String ad_unity_banner_unit_id = "Banner_Android";
     public static String ad_unity_interstitial_unit_id = "Interstitial_Android";
 
+    public static String ad_applovin_banner_unit_id = "ac0e1dddcf0e7584";
+    public static String ad_applovin_interstitial_unit_id = "cc553585d3e313f6";
+
 }

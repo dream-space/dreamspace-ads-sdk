@@ -38,6 +38,14 @@
         android:background="#E4E4E4"
         android:orientation="vertical" />
 
+    <LinearLayout
+        android:id="@+id/banner_applovin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:background="#E4E4E4"
+        android:orientation="vertical" />
+
     <View
         android:layout_width="0dp"
         android:layout_height="0dp"

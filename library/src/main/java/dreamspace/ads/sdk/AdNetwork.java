@@ -2,21 +2,28 @@ package dreamspace.ads.sdk;
 
 import static com.facebook.ads.AdSettings.IntegrationErrorMode.INTEGRATION_ERROR_CALLBACK_MODE;
 
-import dreamspace.ads.sdk.data.AdNetworkType;
-import dreamspace.ads.sdk.data.SharedPref;
-import dreamspace.ads.sdk.gdpr.LegacyGDPR;
-import dreamspace.ads.sdk.listener.AdBannerListener;
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Resources;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Display;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 
+import com.applovin.mediation.MaxAd;
+import com.applovin.mediation.MaxAdListener;
+import com.applovin.mediation.MaxAdViewAdListener;
+import com.applovin.mediation.MaxError;
+import com.applovin.mediation.ads.MaxAdView;
+import com.applovin.mediation.ads.MaxInterstitialAd;
+import com.applovin.sdk.AppLovinMediationProvider;
+import com.applovin.sdk.AppLovinSdk;
 import com.facebook.ads.Ad;
 import com.facebook.ads.AdError;
 import com.facebook.ads.AdSettings;
@@ -27,6 +34,7 @@ import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
@@ -44,6 +52,11 @@ import com.unity3d.services.banners.BannerErrorInfo;
 import com.unity3d.services.banners.BannerView;
 import com.unity3d.services.banners.UnityBannerSize;
 
+import dreamspace.ads.sdk.data.AdNetworkType;
+import dreamspace.ads.sdk.data.SharedPref;
+import dreamspace.ads.sdk.gdpr.LegacyGDPR;
+import dreamspace.ads.sdk.listener.AdBannerListener;
+
 public class AdNetwork {
 
     private static final String TAG = AdNetwork.class.getSimpleName();
@@ -54,6 +67,7 @@ public class AdNetwork {
     //Interstitial
     private InterstitialAd adMobInterstitialAd;
     private com.facebook.ads.InterstitialAd fanInterstitialAd;
+    private MaxInterstitialAd applovinInterstitialAd;
 
     public AdNetwork(Activity activity) {
         this.activity = activity;
@@ -71,6 +85,10 @@ public class AdNetwork {
             UnityAds.initialize(context, AdConfig.ad_unity_game_id, AdConfig.debug_mode);
         } else if (AdConfig.ad_network == AdNetworkType.IRONSOURCE) {
 
+        } else if (AdConfig.ad_network == AdNetworkType.APPLOVIN) {
+            AppLovinSdk.getInstance(context).setMediationProvider(AppLovinMediationProvider.MAX);
+            AppLovinSdk.getInstance(context).getSettings().setVerboseLogging(true);
+            AppLovinSdk.getInstance(context).initializeSdk();
         }
     }
 
@@ -207,6 +225,56 @@ public class AdNetwork {
                 }
             });
             IronSource.loadBanner(banner, AdConfig.ad_ironsource_banner_unit_id);
+
+        } else if (AdConfig.ad_network == AdNetworkType.APPLOVIN) {
+            MaxAdView maxAdView = new MaxAdView(AdConfig.ad_applovin_banner_unit_id, activity);
+            maxAdView.setListener(new MaxAdViewAdListener() {
+                @Override
+                public void onAdExpanded(MaxAd ad) {
+
+                }
+
+                @Override
+                public void onAdCollapsed(MaxAd ad) {
+
+                }
+
+                @Override
+                public void onAdLoaded(MaxAd ad) {
+                    ad_container.setVisibility(View.VISIBLE);
+                }
+
+                @Override
+                public void onAdDisplayed(MaxAd ad) {
+
+                }
+
+                @Override
+                public void onAdHidden(MaxAd ad) {
+
+                }
+
+                @Override
+                public void onAdClicked(MaxAd ad) {
+
+                }
+
+                @Override
+                public void onAdLoadFailed(String adUnitId, MaxError error) {
+                    ad_container.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onAdDisplayFailed(MaxAd ad, MaxError error) {
+
+                }
+            });
+
+            int width = ViewGroup.LayoutParams.MATCH_PARENT;
+            int heightPx = dpToPx(activity, 50);
+            maxAdView.setLayoutParams(new FrameLayout.LayoutParams(width, heightPx));
+            ad_container.addView(maxAdView);
+            maxAdView.loadAd();
         }
     }
 
@@ -283,6 +351,44 @@ public class AdNetwork {
         } else if (AdConfig.ad_network == AdNetworkType.IRONSOURCE) {
             IronSource.init(activity, AdConfig.ad_ironsource_app_key, IronSource.AD_UNIT.BANNER, IronSource.AD_UNIT.INTERSTITIAL);
             IronSource.loadInterstitial();
+
+        } else if (AdConfig.ad_network == AdNetworkType.APPLOVIN) {
+            applovinInterstitialAd = new MaxInterstitialAd(AdConfig.ad_applovin_interstitial_unit_id, activity);
+            applovinInterstitialAd.setListener(new MaxAdListener() {
+                @Override
+                public void onAdLoaded(MaxAd ad) {
+                    Log.d(TAG, "AppLovin Interstitial Ad loaded...");
+                }
+
+                @Override
+                public void onAdDisplayed(MaxAd ad) {
+                    sharedPref.setIntersCounter(0);
+                }
+
+                @Override
+                public void onAdHidden(MaxAd ad) {
+                    applovinInterstitialAd.loadAd();
+                }
+
+                @Override
+                public void onAdClicked(MaxAd ad) {
+
+                }
+
+                @Override
+                public void onAdLoadFailed(String adUnitId, MaxError error) {
+                    Log.d(TAG, "failed to load AppLovin Interstitial : " + error.getAdLoadFailureInfo());
+                    applovinInterstitialAd.loadAd();
+                }
+
+                @Override
+                public void onAdDisplayFailed(MaxAd ad, MaxError error) {
+                    applovinInterstitialAd.loadAd();
+                }
+            });
+
+            // Load the first ad
+            applovinInterstitialAd.loadAd();
         }
     }
 
@@ -291,10 +397,31 @@ public class AdNetwork {
         int counter = sharedPref.getIntersCounter();
         if (counter > AdConfig.ad_inters_interval) {
             if (AdConfig.ad_network == AdNetworkType.ADMOB) {
-                if (adMobInterstitialAd == null) return false;
+                if (adMobInterstitialAd == null) {
+                    loadInterstitialAd(enable);
+                    return false;
+                }
                 adMobInterstitialAd.show(activity);
+                adMobInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                    @Override
+                    public void onAdShowedFullScreenContent() {
+                        super.onAdShowedFullScreenContent();
+                        sharedPref.setIntersCounter(0);
+                        loadInterstitialAd(enable);
+                    }
+
+                    @Override
+                    public void onAdDismissedFullScreenContent() {
+                        super.onAdDismissedFullScreenContent();
+                        adMobInterstitialAd = null;
+                    }
+                });
             } else if (AdConfig.ad_network == AdNetworkType.FAN) {
-                if (fanInterstitialAd == null || !fanInterstitialAd.isAdLoaded()) return false;
+                if (fanInterstitialAd == null) {
+                    loadInterstitialAd(enable);
+                    return false;
+                }
+                if (!fanInterstitialAd.isAdLoaded()) return false;
                 fanInterstitialAd.show();
             } else if (AdConfig.ad_network == AdNetworkType.UNITY) {
                 UnityAds.show(activity, AdConfig.ad_unity_interstitial_unit_id, new IUnityAdsShowListener() {
@@ -361,6 +488,16 @@ public class AdNetwork {
 
                     }
                 });
+
+            } else if (AdConfig.ad_network == AdNetworkType.APPLOVIN) {
+                if (applovinInterstitialAd == null) {
+                    loadInterstitialAd(enable);
+                    return false;
+                }
+                if (!applovinInterstitialAd.isReady()) {
+                    return false;
+                }
+                applovinInterstitialAd.showAd();
             }
             return true;
         } else {
@@ -390,6 +527,11 @@ public class AdNetwork {
         float density = outMetrics.density;
         int adWidth = (int) (widthPixels / density);
         return new UnityBannerSize(adWidth, 50);
+    }
+
+    public static int dpToPx(Context c, int dp) {
+        Resources r = c.getResources();
+        return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));
     }
 
 }

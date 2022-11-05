@@ -38,6 +38,10 @@ public class MainActivity extends AppCompatActivity {
         adNetwork.loadBannerAd(true, findViewById(R.id.banner_iron_source));
         adNetwork.loadInterstitialAd(true);
 
+        AdConfig.ad_network = AdNetworkType.APPLOVIN;
+        adNetwork.loadBannerAd(true, findViewById(R.id.banner_applovin));
+        adNetwork.loadInterstitialAd(true);
+
         ((Button) findViewById(R.id.inters_admob)).setOnClickListener(view -> {
             AdConfig.ad_network = AdNetworkType.ADMOB;
             adNetwork.showInterstitialAd(true);
