@@ -24,6 +24,7 @@ import com.applovin.mediation.ads.MaxAdView;
 import com.applovin.mediation.ads.MaxInterstitialAd;
 import com.applovin.sdk.AppLovinMediationProvider;
 import com.applovin.sdk.AppLovinSdk;
+import com.applovin.sdk.AppLovinSdkConfiguration;
 import com.facebook.ads.Ad;
 import com.facebook.ads.AdError;
 import com.facebook.ads.AdSettings;
@@ -51,6 +52,8 @@ import com.unity3d.ads.UnityAds;
 import com.unity3d.services.banners.BannerErrorInfo;
 import com.unity3d.services.banners.BannerView;
 import com.unity3d.services.banners.UnityBannerSize;
+
+import java.util.Arrays;
 
 import dreamspace.ads.sdk.data.AdNetworkType;
 import dreamspace.ads.sdk.data.SharedPref;
@@ -86,9 +89,11 @@ public class AdNetwork {
         } else if (AdConfig.ad_network == AdNetworkType.IRONSOURCE) {
 
         } else if (AdConfig.ad_network == AdNetworkType.APPLOVIN) {
+            Log.d(TAG, "APPLOVIN : init");
             AppLovinSdk.getInstance(context).setMediationProvider(AppLovinMediationProvider.MAX);
             AppLovinSdk.getInstance(context).getSettings().setVerboseLogging(true);
-            AppLovinSdk.getInstance(context).initializeSdk();
+            AppLovinSdk.getInstance(context).getSettings().setTestDeviceAdvertisingIds(Arrays.asList("4b5a9d68-bd4c-4d99-8b59-4a784759f4d3"));
+            AppLovinSdk.initializeSdk(context, configuration -> Log.d(TAG, "APPLOVIN : onSdkInitialized"));
         }
     }
 
@@ -227,6 +232,7 @@ public class AdNetwork {
             IronSource.loadBanner(banner, AdConfig.ad_ironsource_banner_unit_id);
 
         } else if (AdConfig.ad_network == AdNetworkType.APPLOVIN) {
+            Log.d(TAG, "APPLOVIN :  start banner");
             MaxAdView maxAdView = new MaxAdView(AdConfig.ad_applovin_banner_unit_id, activity);
             maxAdView.setListener(new MaxAdViewAdListener() {
                 @Override
@@ -241,6 +247,7 @@ public class AdNetwork {
 
                 @Override
                 public void onAdLoaded(MaxAd ad) {
+                    Log.d(TAG, "APPLOVIN : onAdLoaded");
                     ad_container.setVisibility(View.VISIBLE);
                 }
 
@@ -261,6 +268,7 @@ public class AdNetwork {
 
                 @Override
                 public void onAdLoadFailed(String adUnitId, MaxError error) {
+                    Log.d(TAG, "APPLOVIN : " + error.getMessage());
                     ad_container.setVisibility(View.GONE);
                 }
 

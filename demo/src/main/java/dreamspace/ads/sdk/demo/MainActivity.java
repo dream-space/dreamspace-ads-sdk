@@ -23,22 +23,27 @@ public class MainActivity extends AppCompatActivity {
         AdConfig.ad_inters_interval = 0;
 
         AdConfig.ad_network = AdNetworkType.ADMOB;
+        AdNetwork.init(this);
         adNetwork.loadBannerAd(true, findViewById(R.id.banner_admob));
         adNetwork.loadInterstitialAd(true);
 
         AdConfig.ad_network = AdNetworkType.FAN;
+        AdNetwork.init(this);
         adNetwork.loadBannerAd(true, findViewById(R.id.banner_fan));
         adNetwork.loadInterstitialAd(true);
 
         AdConfig.ad_network = AdNetworkType.UNITY;
+        AdNetwork.init(this);
         adNetwork.loadBannerAd(true, findViewById(R.id.banner_unity));
         adNetwork.loadInterstitialAd(true);
 
         AdConfig.ad_network = AdNetworkType.IRONSOURCE;
+        AdNetwork.init(this);
         adNetwork.loadBannerAd(true, findViewById(R.id.banner_iron_source));
         adNetwork.loadInterstitialAd(true);
 
         AdConfig.ad_network = AdNetworkType.APPLOVIN;
+        AdNetwork.init(this);
         adNetwork.loadBannerAd(true, findViewById(R.id.banner_applovin));
         adNetwork.loadInterstitialAd(true);
 
@@ -59,6 +64,11 @@ public class MainActivity extends AppCompatActivity {
 
         ((Button) findViewById(R.id.inters_ironsource)).setOnClickListener(view -> {
             AdConfig.ad_network = AdNetworkType.IRONSOURCE;
+            adNetwork.showInterstitialAd(true);
+        });
+
+        ((Button) findViewById(R.id.inters_applovin)).setOnClickListener(view -> {
+            AdConfig.ad_network = AdNetworkType.APPLOVIN;
             adNetwork.showInterstitialAd(true);
         });
 

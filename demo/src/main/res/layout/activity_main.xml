@@ -83,4 +83,12 @@
         android:text="Inters IRONSOURCE"
         android:textColor="#3C3C3C" />
 
+    <Button
+        android:id="@+id/inters_applovin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:selectableItemBackground"
+        android:text="Inters APPLOVIN"
+        android:textColor="#3C3C3C" />
+
 </LinearLayout>
