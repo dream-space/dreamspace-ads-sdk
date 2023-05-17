@@ -34,18 +34,18 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.aar', '*.jar'], exclude: [])
     implementation 'androidx.multidex:multidex:2.0.1'
-    implementation 'androidx.appcompat:appcompat:1.5.1'
-    implementation 'com.google.android.material:material:1.7.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.9.0'
     implementation 'com.google.android.gms:play-services-ads-identifier:18.0.1'
     implementation 'com.google.android.gms:play-services-appset:16.0.2'
-    implementation 'com.google.android.gms:play-services-basement:18.1.0'
+    implementation 'com.google.android.gms:play-services-basement:18.2.0'
 
     //Ad Networks
-    implementation 'com.google.android.gms:play-services-ads:21.5.0'
-    implementation 'com.facebook.android:audience-network-sdk:6.12.0'
-    implementation 'com.unity3d.ads:unity-ads:4.6.0'
-    implementation 'com.ironsource.sdk:mediationsdk:7.2.7'
-    implementation 'com.applovin:applovin-sdk:11.8.1'
+    implementation 'com.google.android.gms:play-services-ads:22.0.0'
+    implementation 'com.facebook.android:audience-network-sdk:6.14.0'
+    implementation 'com.unity3d.ads:unity-ads:4.7.1'
+    implementation 'com.ironsource.sdk:mediationsdk:7.3.0.1'
+    implementation 'com.applovin:applovin-sdk:11.9.0'
 
     //GDPR
     implementation 'com.google.android.ump:user-messaging-platform:2.0.0'
@@ -69,7 +69,7 @@ afterEvaluate {
                 from components.release
                 groupId = "dream-space"
                 artifactId = "dreamspace.ads.sdk"
-                version = "1.1.1"
+                version = "1.2.0"
             }
         }
     }
