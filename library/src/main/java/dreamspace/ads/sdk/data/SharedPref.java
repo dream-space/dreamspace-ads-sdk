@@ -3,6 +3,8 @@ package dreamspace.ads.sdk.data;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import dreamspace.ads.sdk.AdConfig;
+
 public class SharedPref {
 
     private Context ctx;
@@ -24,6 +26,16 @@ public class SharedPref {
 
     public void clearIntersCounter() {
         custom_prefence.edit().putInt("INTERS_COUNT", 0).apply();
+    }
+
+
+    // save open app unit id
+    public void setOpenAppUnitId(String value) {
+        custom_prefence.edit().putString("OPEN_APP_ID", value).apply();
+    }
+
+    public String getOpenAppUnitId() {
+        return custom_prefence.getString("OPEN_APP_ID", AdConfig.ad_admob_open_app_unit_id);
     }
 
 
