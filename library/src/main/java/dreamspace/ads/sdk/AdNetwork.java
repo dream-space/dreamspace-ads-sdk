@@ -148,6 +148,50 @@ public class AdNetwork {
         sharedPref.setOpenAppUnitId(AdConfig.ad_admob_open_app_unit_id);
     }
 
+    public static void init(Context context) {
+        if (!AdConfig.ad_enable) return;
+
+        // check if using single networks
+        if (AdConfig.ad_networks.length == 0) {
+            AdConfig.ad_networks = new AdNetworkType[]{
+                    AdConfig.ad_network
+            };
+        }
+
+        ad_networks = Arrays.asList(AdConfig.ad_networks);
+        // init admob
+        if (ad_networks.contains(AdNetworkType.ADMOB)) {
+            Log.d(TAG, "ADMOB init");
+            MobileAds.initialize(context);
+        }
+
+        // init fan
+        if (ad_networks.contains(AdNetworkType.FAN)) {
+            Log.d(TAG, "FAN init");
+            AudienceNetworkAds.initialize(context);
+            AdSettings.setIntegrationErrorMode(INTEGRATION_ERROR_CALLBACK_MODE);
+        }
+
+        // init unity
+        if (ad_networks.contains(AdNetworkType.UNITY)) {
+            Log.d(TAG, "UNITY init");
+            UnityAds.initialize(context, AdConfig.ad_unity_game_id, AdConfig.debug_mode);
+        }
+
+        // init applovin
+        if (ad_networks.contains(AdNetworkType.APPLOVIN)) {
+            Log.d(TAG, "APPLOVIN init");
+            AppLovinSdk.getInstance(context).setMediationProvider(AppLovinMediationProvider.MAX);
+            AppLovinSdk.getInstance(context).getSettings().setVerboseLogging(true);
+            AppLovinSdk.getInstance(context).getSettings().setTestDeviceAdvertisingIds(Arrays.asList("4b5a9d68-bd4c-4d99-8b59-4a784759f4d3"));
+            AppLovinSdk.initializeSdk(context, configuration -> {
+            });
+        }
+
+        // save to shared pref
+        new SharedPref(context).setOpenAppUnitId(AdConfig.ad_admob_open_app_unit_id);
+    }
+
     public void loadBannerAd(boolean enable, LinearLayout ad_container) {
         banner_retry_from_start = 0;
         loadBannerAdMain(enable, 0, 0, ad_container);
