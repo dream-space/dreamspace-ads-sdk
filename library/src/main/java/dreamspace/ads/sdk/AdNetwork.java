@@ -638,8 +638,12 @@ public class AdNetwork {
     }
 
     public static void loadAndShowOpenAppAd(Context context, boolean enable, AdOpenListener listener) {
-        if (!AdConfig.ad_enable || !enable) return;
+        if (!AdConfig.ad_enable || !enable) {
+            if(listener != null) listener.onFinish();
+            return;
+        }
         if (ad_networks == null || !ad_networks.contains(AdNetworkType.ADMOB)) {
+            if(listener != null) listener.onFinish();
             return;
         }
         AdRequest request = new AdRequest.Builder().build();
