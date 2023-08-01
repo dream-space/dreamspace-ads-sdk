@@ -726,8 +726,20 @@ public class AdNetwork {
     }
 
     public static void showOpenAppAd(Context context, boolean enable) {
-        if (!AdConfig.ad_enable || !enable || appOpenAdLoading) return;
+        showOpenAppAdCore(context, enable, null);
+    }
+
+    public static void showOpenAppAd(Context context, boolean enable, AdOpenListener listener) {
+        showOpenAppAdCore(context, enable, listener);
+    }
+
+    public static void showOpenAppAdCore(Context context, boolean enable, AdOpenListener listener) {
+        if (!AdConfig.ad_enable || !enable || appOpenAdLoading) {
+            if(listener != null) listener.onFinish();
+            return;
+        }
         if (ad_networks == null || !ad_networks.contains(AdNetworkType.ADMOB)) {
+            if(listener != null) listener.onFinish();
             return;
         }
         if(appOpenAd != null && activityListener != null && ActivityListener.currentActivity != null){
@@ -735,11 +747,13 @@ public class AdNetwork {
                 @Override
                 public void onAdDismissedFullScreenContent() {
                     loadOpenAppAd(context, true);
+                    if(listener != null) listener.onFinish();
                 }
 
                 @Override
                 public void onAdFailedToShowFullScreenContent(com.google.android.gms.ads.AdError adError) {
                     loadOpenAppAd(context, true);
+                    if(listener != null) listener.onFinish();
                 }
 
                 @Override
