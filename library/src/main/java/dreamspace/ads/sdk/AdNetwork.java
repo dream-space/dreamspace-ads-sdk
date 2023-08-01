@@ -657,13 +657,13 @@ public class AdNetwork {
                     @Override
                     public void onAdDismissedFullScreenContent() {
                         if(listener != null) listener.onFinish();
-                        loadOpenAppAd(context, true);
+                        //loadOpenAppAd(context, true);
                     }
 
                     @Override
                     public void onAdFailedToShowFullScreenContent(com.google.android.gms.ads.AdError adError) {
                         if(listener != null) listener.onFinish();
-                        loadOpenAppAd(context, true);
+                        //loadOpenAppAd(context, true);
                     }
 
                     @Override
