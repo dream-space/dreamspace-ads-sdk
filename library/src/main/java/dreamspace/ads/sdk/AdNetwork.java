@@ -59,6 +59,7 @@ import com.unity3d.services.banners.UnityBannerSize;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import dreamspace.ads.sdk.data.AdNetworkType;
@@ -76,6 +77,7 @@ public class AdNetwork {
     private static int last_interstitial_index = 0;
     private static int banner_retry_from_start = 0;
     private static int interstitial_retry_from_start = 0;
+    private static long openApploadTime = 0;
 
     //Interstitial
     private InterstitialAd adMobInterstitialAd;
@@ -695,8 +697,8 @@ public class AdNetwork {
         AppOpenAd.load(context, unit_id, request, new AppOpenAd.AppOpenAdLoadCallback() {
             @Override
             public void onAdLoaded(@NonNull AppOpenAd ad) {
-                super.onAdLoaded(appOpenAd);
-                appOpenAd = ad;
+                super.onAdLoaded(ad);
+                AppOpenAd appOpenAd_ = ad;
                 FullScreenContentCallback fullScreenContentCallback = new FullScreenContentCallback() {
                     @Override
                     public void onAdDismissedFullScreenContent() {
@@ -716,9 +718,9 @@ public class AdNetwork {
                     }
                 };
 
-                appOpenAd.setFullScreenContentCallback(fullScreenContentCallback);
+                appOpenAd_.setFullScreenContentCallback(fullScreenContentCallback);
                 if(activityListener != null && ActivityListener.currentActivity != null){
-                    appOpenAd.show(ActivityListener.currentActivity);
+                    appOpenAd_.show(ActivityListener.currentActivity);
                 } else {
                     if(listener != null) listener.onFinish();
                 }
@@ -746,9 +748,10 @@ public class AdNetwork {
         AppOpenAd.load(context, unit_id, request, new AppOpenAd.AppOpenAdLoadCallback() {
             @Override
             public void onAdLoaded(@NonNull AppOpenAd ad) {
-                super.onAdLoaded(appOpenAd);
+                super.onAdLoaded(ad);
                 appOpenAd = ad;
                 appOpenAdLoading = false;
+                openApploadTime = (new Date()).getTime();
                 Log.d(TAG, "ADMOB Open App loaded");
             }
 
@@ -777,6 +780,11 @@ public class AdNetwork {
         }
         if (ad_networks == null || !ad_networks.contains(AdNetworkType.ADMOB)) {
             if(listener != null) listener.onFinish();
+            return;
+        }
+        if(!wasLoadTimeLessThanNHoursAgo(4)){
+            if(listener != null) listener.onFinish();
+            loadOpenAppAd(context, true);
             return;
         }
         if(appOpenAd != null && activityListener != null && ActivityListener.currentActivity != null){
@@ -826,6 +834,13 @@ public class AdNetwork {
         float density = outMetrics.density;
         int adWidth = (int) (widthPixels / density);
         return new UnityBannerSize(adWidth, 50);
+    }
+
+    // check if ad was loaded more than n hours ago.
+    private static boolean wasLoadTimeLessThanNHoursAgo(long numHours) {
+        long dateDifference = (new Date()).getTime() - openApploadTime;
+        long numMilliSecondsPerHour = 3600000;
+        return (dateDifference < (numMilliSecondsPerHour * numHours));
     }
 
     public static int dpToPx(Context c, int dp) {
