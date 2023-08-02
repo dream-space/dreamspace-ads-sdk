@@ -731,15 +731,6 @@ public class AdNetwork {
             }
 
         });
-
-        new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            try {
-                if(appOpenAd == null) {
-                    if(listener != null) listener.onFinish();
-                }
-            } catch (Exception e) {
-            }
-        }, AdConfig.limit_time_open_app_loading * 1000);
     }
 
     public static void loadOpenAppAd(Context context, boolean enable) {

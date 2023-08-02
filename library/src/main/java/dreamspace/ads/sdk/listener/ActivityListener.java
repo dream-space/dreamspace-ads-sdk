@@ -23,7 +23,7 @@ public class ActivityListener implements ActivityLifecycleCallbacks, DefaultLife
         this.application = application;
         this.application.registerActivityLifecycleCallbacks(this);
         ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
-        AdNetwork.loadOpenAppAd(application, AdConfig.ad_enable_open_app);
+        //AdNetwork.loadOpenAppAd(application, AdConfig.ad_enable_open_app);
     }
 
     // when the app moves to foreground.

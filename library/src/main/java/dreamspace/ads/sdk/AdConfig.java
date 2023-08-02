@@ -8,7 +8,7 @@ public class AdConfig implements Serializable {
 
     public static boolean ad_enable = true;
     public static boolean ad_enable_open_app = true;
-    public static int limit_time_open_app_loading = 1;
+    public static int limit_time_open_app_loading = 10;
     public static boolean debug_mode = true;
     public static boolean enable_gdpr = true;
 
