@@ -1,5 +1,6 @@
 package dreamspace.ads.sdk.demo;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 
@@ -75,6 +76,10 @@ public class MainActivity extends AppCompatActivity {
 //            AdConfig.ad_network = AdNetworkType.APPLOVIN;
 //            adNetwork.showInterstitialAd(true);
 //        });
+
+        ((Button) findViewById(R.id.next_activity)).setOnClickListener(view -> {
+            startActivity(new Intent(this, ThirdActivity.class));
+        });
 
     }
 }

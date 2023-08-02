@@ -91,7 +91,7 @@ public class AdNetwork {
     public AdNetwork(Activity activity) {
         this.activity = activity;
         sharedPref = new SharedPref(activity);
-        activityListener = new ActivityListener(activity.getApplication());
+        //activityListener = new ActivityListener(activity.getApplication());
     }
 
     public static void initActivityListener(Application application){
