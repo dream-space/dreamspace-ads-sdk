@@ -719,6 +719,8 @@ public class AdNetwork {
                 appOpenAd.setFullScreenContentCallback(fullScreenContentCallback);
                 if(activityListener != null && ActivityListener.currentActivity != null){
                     appOpenAd.show(ActivityListener.currentActivity);
+                } else {
+                    if(listener != null) listener.onFinish();
                 }
                 Log.d(TAG, "ADMOB Open App loaded");
             }
