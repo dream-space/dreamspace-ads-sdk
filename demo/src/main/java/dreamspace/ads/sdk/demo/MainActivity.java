@@ -6,9 +6,9 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import dreamspace.ads.sdk.AdConfig;
-import dreamspace.ads.sdk.AdNetwork;
-import dreamspace.ads.sdk.data.AdNetworkType;
+import dreamspace.ads.AdConfig;
+import dreamspace.ads.AdNetwork;
+import dreamspace.ads.data.AdNetworkType;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
 
 //        AdConfig.ad_network = AdNetworkType.FAN;
 //        AdNetwork.init(this);
-//        adNetwork.loadBannerAd(true, findViewById(R.id.banner_fan));
+        adNetwork.loadBannerAd(true, findViewById(R.id.banner_fan));
 //        adNetwork.loadInterstitialAd(true);
 //
 //        AdConfig.ad_network = AdNetworkType.UNITY;

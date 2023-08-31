@@ -1,4 +1,4 @@
-package dreamspace.ads.sdk.data;
+package dreamspace.ads.data;
 
 public enum AdNetworkType {
     ADMOB, FAN, UNITY, IRONSOURCE, APPLOVIN

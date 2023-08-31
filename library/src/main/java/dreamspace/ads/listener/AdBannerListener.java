@@ -1,4 +1,4 @@
-package dreamspace.ads.sdk.listener;
+package dreamspace.ads.listener;
 
 public interface AdBannerListener {
     void onShow();

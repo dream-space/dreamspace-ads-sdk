@@ -1,8 +1,8 @@
-package dreamspace.ads.sdk;
+package dreamspace.ads;
 
 import java.io.Serializable;
 
-import dreamspace.ads.sdk.data.AdNetworkType;
+import dreamspace.ads.data.AdNetworkType;
 
 public class AdConfig implements Serializable {
 

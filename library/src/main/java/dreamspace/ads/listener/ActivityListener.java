@@ -1,4 +1,4 @@
-package dreamspace.ads.sdk.listener;
+package dreamspace.ads.listener;
 
 import android.app.Activity;
 import android.app.Application;
@@ -12,8 +12,8 @@ import androidx.lifecycle.DefaultLifecycleObserver;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ProcessLifecycleOwner;
 
-import dreamspace.ads.sdk.AdConfig;
-import dreamspace.ads.sdk.AdNetwork;
+import dreamspace.ads.AdConfig;
+import dreamspace.ads.AdNetwork;
 
 public class ActivityListener implements ActivityLifecycleCallbacks, DefaultLifecycleObserver {
 
