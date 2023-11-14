@@ -3,12 +3,18 @@
 buildscript {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
         maven {
             url 'https://jitpack.io'
         }
         maven {
             url 'https://android-sdk.is.com/'
+        }
+        maven {
+            url 'https://unity3ddist.jfrog.io/artifactory/unity-mediation-mvn-prod-local/'
+        }
+        maven {
+            url 'https://maven.wortise.com/artifactory/public'
         }
     }
     dependencies {
@@ -19,12 +25,18 @@ buildscript {
 allprojects {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
         maven {
             url 'https://jitpack.io'
         }
         maven {
             url 'https://android-sdk.is.com/'
+        }
+        maven {
+            url 'https://unity3ddist.jfrog.io/artifactory/unity-mediation-mvn-prod-local/'
+        }
+        maven {
+            url 'https://maven.wortise.com/artifactory/public'
         }
     }
 }

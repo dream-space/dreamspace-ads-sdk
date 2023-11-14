@@ -19,7 +19,6 @@ public class SplashActivity extends AppCompatActivity {
         AdNetwork adNetwork = new AdNetwork(this);
         AdConfig.ad_inters_interval = 2;
         AdConfig.retry_from_start_max = 2;
-        AdConfig.retry_from_start = true;
         AdConfig.ad_networks = new AdNetworkType[]{
                 AdNetworkType.ADMOB,
                 //AdNetworkType.IRONSOURCE,
