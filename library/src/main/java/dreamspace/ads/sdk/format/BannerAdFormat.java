@@ -49,6 +49,8 @@ import com.unity3d.services.banners.BannerView;
 import com.unity3d.services.banners.UnityBannerSize;
 import com.wortise.ads.banner.BannerAd;
 
+import java.util.List;
+
 import dreamspace.ads.sdk.AdNetwork;
 import dreamspace.ads.sdk.data.AdNetworkType;
 import dreamspace.ads.sdk.helper.AppLovinCustomEventBanner;
@@ -59,14 +61,14 @@ public class BannerAdFormat {
     private static final String TAG = AdNetwork.class.getSimpleName();
 
     private final Activity activity;
-
+    private LinearLayout adContainer;
+    private IronSourceBannerLayout ironSourceBannerLayout;
     public BannerAdFormat(Activity activity) {
         this.activity = activity;
     }
 
     public void loadBannerAdMain(int ad_index, int retry_count, LinearLayout ad_container) {
         if (retry_count > retry_from_start_max) return;
-
 
         ad_container.setVisibility(View.GONE);
         ad_container.removeAllViews();
@@ -114,7 +116,7 @@ public class BannerAdFormat {
                         ad_container.setVisibility(View.VISIBLE);
                     }
                 });
-            }else if (type == FAN) {
+            } else if (type == FAN) {
                 com.facebook.ads.AdView adView = new com.facebook.ads.AdView(activity, ad_fan_banner_unit_id, com.facebook.ads.AdSize.BANNER_HEIGHT_50);
                 // Add the ad view to your activity layout
                 ad_container.addView(adView);
@@ -150,10 +152,10 @@ public class BannerAdFormat {
 
                 ISBannerSize bannerSize = ISBannerSize.BANNER;
                 bannerSize.setAdaptive(true);
-                IronSourceBannerLayout banner = IronSource.createBanner(activity, bannerSize);
+                ironSourceBannerLayout = IronSource.createBanner(activity, bannerSize);
                 FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
-                ad_container.addView(banner, 0, layoutParams);
-                banner.setLevelPlayBannerListener(new LevelPlayBannerListener() {
+                ad_container.addView(ironSourceBannerLayout, 0, layoutParams);
+                ironSourceBannerLayout.setLevelPlayBannerListener(new LevelPlayBannerListener() {
                     @Override
                     public void onAdLoaded(AdInfo adInfo) {
                         ad_container.setVisibility(View.VISIBLE);
@@ -187,9 +189,9 @@ public class BannerAdFormat {
 
                     }
                 });
-                IronSource.loadBanner(banner, ad_ironsource_banner_unit_id);
+                IronSource.loadBanner(ironSourceBannerLayout, ad_ironsource_banner_unit_id);
             } else if (type == UNITY) {
-                BannerView bottomBanner = new BannerView(activity, ad_unity_banner_unit_id, getUnityBannerSize());
+                BannerView bottomBanner = new BannerView(activity, ad_unity_banner_unit_id, Tools.getUnityBannerSize(activity));
                 bottomBanner.setListener(new BannerView.Listener() {
                     @Override
                     public void onBannerLoaded(BannerView bannerAdView) {
@@ -234,6 +236,7 @@ public class BannerAdFormat {
                 });
                 ad_container.addView(banner);
             } else if (type == APPLOVIN || type == APPLOVIN_MAX || type == FAN_BIDDING_APPLOVIN_MAX) {
+                Log.d(TAG, type.name() + " loadBannerAdMain");
                 MaxAdView maxAdView = new MaxAdView(ad_applovin_banner_unit_id, activity);
                 maxAdView.setListener(new MaxAdViewAdListener() {
                     @Override
@@ -276,19 +279,21 @@ public class BannerAdFormat {
 
                     @Override
                     public void onAdDisplayFailed(MaxAd ad, MaxError error) {
-
+                        Log.d(TAG, type.name() + " onAdDisplayFailed " + error.getMessage());
+                        ad_container.setVisibility(View.GONE);
+                        retryLoadBanner(ad_index, retry_count, ad_container);
                     }
                 });
 
                 int width = ViewGroup.LayoutParams.MATCH_PARENT;
-                int heightPx = dpToPx(activity, 50);
+                int heightPx = Tools.dpToPx(activity, 50);
                 maxAdView.setLayoutParams(new FrameLayout.LayoutParams(width, heightPx));
                 ad_container.addView(maxAdView);
                 maxAdView.loadAd();
             } else if (type == APPLOVIN_DISCOVERY) {
                 AdRequest.Builder builder = new AdRequest.Builder();
                 Bundle bannerExtras = new Bundle();
-                bannerExtras.putString("zone_id", ad_applovin_banner_unit_id);
+                bannerExtras.putString("zone_id", ad_applovin_banner_zone_id);
                 builder.addCustomEventExtrasBundle(AppLovinCustomEventBanner.class, bannerExtras);
 
                 boolean isTablet2 = AppLovinSdkUtils.isTablet(activity);
@@ -305,6 +310,7 @@ public class BannerAdFormat {
                     public void failedToReceiveAd(int errorCode) {
                         ad_container.setVisibility(View.GONE);
                         Log.d(TAG, type.name() + " failedToReceiveAd : " + errorCode);
+                        retryLoadBanner(ad_index, retry_count, ad_container);
                     }
                 });
                 ad_container.addView(adView);
@@ -336,6 +342,8 @@ public class BannerAdFormat {
                 });
             }
         });
+
+        adContainer = ad_container;
     }
 
     private void retryLoadBanner(int ad_index, int retry_count, LinearLayout ad_container) {
@@ -353,32 +361,16 @@ public class BannerAdFormat {
     }
 
 
-    private AdSize getAdmobBannerSize() {
-        // Step 2 - Determine the screen width (less decorations) to use for the ad width.
-        Display display = activity.getWindowManager().getDefaultDisplay();
-        DisplayMetrics outMetrics = new DisplayMetrics();
-        display.getMetrics(outMetrics);
-        float widthPixels = outMetrics.widthPixels;
-        float density = outMetrics.density;
-        int adWidth = (int) (widthPixels / density);
-        // Step 3 - Get adaptive ad size and return for setting on the ad view.
-        return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(activity, adWidth);
-    }
-
-    private UnityBannerSize getUnityBannerSize() {
-        Display display = activity.getWindowManager().getDefaultDisplay();
-        DisplayMetrics outMetrics = new DisplayMetrics();
-        display.getMetrics(outMetrics);
-        float widthPixels = outMetrics.widthPixels;
-        float density = outMetrics.density;
-        int adWidth = (int) (widthPixels / density);
-        return new UnityBannerSize(adWidth, 50);
-    }
-
-
-    public static int dpToPx(Context c, int dp) {
-        Resources r = c.getResources();
-        return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));
+    public void destroyAndDetachBanner(List<AdNetworkType> adNetworks) {
+        if (Tools.contains(adNetworks, IRONSOURCE, FAN_BIDDING_IRONSOURCE)) {
+            if (ironSourceBannerLayout != null) {
+                Log.d(TAG, "ironSource banner is not null, ready to destroy");
+                IronSource.destroyBanner(ironSourceBannerLayout);
+                adContainer.removeView(ironSourceBannerLayout);
+            } else {
+                Log.d(TAG, "ironSource banner is null");
+            }
+        }
     }
 
 }

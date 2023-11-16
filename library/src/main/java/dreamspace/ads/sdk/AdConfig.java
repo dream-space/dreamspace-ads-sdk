@@ -17,11 +17,10 @@ public class AdConfig implements Serializable {
     public static int retry_from_start_max = 0;
 
     public static AdNetworkType[] ad_networks = {
-            AdNetworkType.ADMOB,
-            AdNetworkType.IRONSOURCE
+            AdNetworkType.ADMOB
     };
 
-    public static int ad_inters_interval = 5;
+    public static int ad_inters_interval = 0;
 
     public static String ad_admob_publisher_id = "pub-3940256099942544";
     public static String ad_admob_banner_unit_id = "ca-app-pub-3940256099942544/6300978111";
@@ -35,19 +34,19 @@ public class AdConfig implements Serializable {
     public static String ad_fan_banner_unit_id = "IMG_16_9_APP_INSTALL#YOUR_PLACEMENT_ID";
     public static String ad_fan_interstitial_unit_id = "IMG_16_9_APP_INSTALL#YOUR_PLACEMENT_ID";
 
-    public static String ad_ironsource_app_key = "170112cfd";
+    public static String ad_ironsource_app_key = "1a12ca71d";
     public static String ad_ironsource_banner_unit_id = "DefaultBanner";
     public static String ad_ironsource_interstitial_unit_id = "DefaultInterstitial";
 
-    public static String ad_unity_game_id = "4297717";
+    public static String ad_unity_game_id = "4988568";
     public static String ad_unity_banner_unit_id = "Banner_Android";
     public static String ad_unity_interstitial_unit_id = "Interstitial_Android";
 
     public static String ad_applovin_banner_unit_id = "a3a3a5b44c763304";
     public static String ad_applovin_interstitial_unit_id = "35f9c01af124fcb9";
 
-    public static String ad_applovin_banner_zone_id = "afb7122672e86340";
-    public static String ad_applovin_interstitial_zone_id = "b6eba8b976279ea5";
+    public static String ad_applovin_banner_zone_id = "df40a31072feccab";
+    public static String ad_applovin_interstitial_zone_id = "d0eea040d4bd561e";
 
     public static String ad_startapp_app_id = "0";
 

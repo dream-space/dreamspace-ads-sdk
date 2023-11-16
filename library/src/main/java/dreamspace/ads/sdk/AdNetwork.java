@@ -1,8 +1,27 @@
 package dreamspace.ads.sdk;
 
 import static com.facebook.ads.AdSettings.IntegrationErrorMode.INTEGRATION_ERROR_CALLBACK_MODE;
-import static dreamspace.ads.sdk.AdConfig.*;
-import static dreamspace.ads.sdk.data.AdNetworkType.*;
+import static dreamspace.ads.sdk.AdConfig.ad_admob_open_app_unit_id;
+import static dreamspace.ads.sdk.AdConfig.ad_enable;
+import static dreamspace.ads.sdk.AdConfig.ad_ironsource_app_key;
+import static dreamspace.ads.sdk.AdConfig.ad_network;
+import static dreamspace.ads.sdk.AdConfig.ad_startapp_app_id;
+import static dreamspace.ads.sdk.AdConfig.ad_unity_game_id;
+import static dreamspace.ads.sdk.AdConfig.ad_wortise_app_id;
+import static dreamspace.ads.sdk.data.AdNetworkType.ADMOB;
+import static dreamspace.ads.sdk.data.AdNetworkType.APPLOVIN;
+import static dreamspace.ads.sdk.data.AdNetworkType.APPLOVIN_DISCOVERY;
+import static dreamspace.ads.sdk.data.AdNetworkType.APPLOVIN_MAX;
+import static dreamspace.ads.sdk.data.AdNetworkType.FAN;
+import static dreamspace.ads.sdk.data.AdNetworkType.FAN_BIDDING_ADMOB;
+import static dreamspace.ads.sdk.data.AdNetworkType.FAN_BIDDING_AD_MANAGER;
+import static dreamspace.ads.sdk.data.AdNetworkType.FAN_BIDDING_APPLOVIN_MAX;
+import static dreamspace.ads.sdk.data.AdNetworkType.FAN_BIDDING_IRONSOURCE;
+import static dreamspace.ads.sdk.data.AdNetworkType.IRONSOURCE;
+import static dreamspace.ads.sdk.data.AdNetworkType.MANAGER;
+import static dreamspace.ads.sdk.data.AdNetworkType.STARTAPP;
+import static dreamspace.ads.sdk.data.AdNetworkType.UNITY;
+import static dreamspace.ads.sdk.data.AdNetworkType.WORTISE;
 
 import android.app.Activity;
 import android.app.Application;
@@ -14,6 +33,8 @@ import androidx.annotation.NonNull;
 
 import com.applovin.sdk.AppLovinMediationProvider;
 import com.applovin.sdk.AppLovinSdk;
+import com.applovin.sdk.AppLovinSdkConfiguration;
+import com.applovin.sdk.AppLovinSdkSettings;
 import com.facebook.ads.AdSettings;
 import com.facebook.ads.AudienceNetworkAds;
 import com.google.android.gms.ads.AdRequest;
@@ -43,6 +64,7 @@ import dreamspace.ads.sdk.format.BannerAdFormat;
 import dreamspace.ads.sdk.format.InterstitialAdFormat;
 import dreamspace.ads.sdk.helper.AudienceNetworkInitializeHelper;
 import dreamspace.ads.sdk.listener.ActivityListener;
+import dreamspace.ads.sdk.listener.AdIntersListener;
 import dreamspace.ads.sdk.listener.AdOpenListener;
 import dreamspace.ads.sdk.utils.Tools;
 
@@ -55,7 +77,7 @@ public class AdNetwork {
     private static long openApploadTime = 0;
     private static BannerAdFormat bannerAdFormat;
     private static InterstitialAdFormat interstitialAdFormat;
-
+    public static String GAID = "";
 
     // Open app admob
     public static AppOpenAd appOpenAd = null;
@@ -63,11 +85,14 @@ public class AdNetwork {
     private static ActivityListener activityListener = null;
     private static List<AdNetworkType> ad_networks = new ArrayList<>();
 
+    private AdIntersListener adIntersListener = null;
+
     public AdNetwork(Activity activity) {
         this.activity = activity;
         sharedPref = new SharedPref(activity);
         bannerAdFormat = new BannerAdFormat(activity);
         interstitialAdFormat = new InterstitialAdFormat(activity);
+        Tools.getGAID(activity);
     }
 
     public static void initActivityListener(Application application) {
@@ -108,9 +133,13 @@ public class AdNetwork {
         }
 
         // init iron source
-        if (Tools.contains(ad_networks, IRONSOURCE)) {
+        if (Tools.contains(ad_networks, IRONSOURCE, FAN_BIDDING_IRONSOURCE)) {
             Log.d(TAG, "IRONSOURCE init");
-            IronSource.init(this.activity, ad_ironsource_app_key);
+            String advertisingId = IronSource.getAdvertiserId(activity);
+            IronSource.setUserId(advertisingId);
+            IronSource.init(activity, ad_ironsource_app_key, () -> {
+                Log.d(TAG, "IRONSOURCE onInitializationComplete");
+            });
         }
 
         // init unity
@@ -122,7 +151,7 @@ public class AdNetwork {
                     .setInitializationListener(new IInitializationListener() {
                         @Override
                         public void onInitializationComplete() {
-
+                            Log.d(TAG, "UNITY onInitializationComplete");
                         }
 
                         @Override
@@ -136,8 +165,20 @@ public class AdNetwork {
         // init applovin
         if (Tools.contains(ad_networks, APPLOVIN, APPLOVIN_MAX, FAN_BIDDING_APPLOVIN_MAX)) {
             Log.d(TAG, "APPLOVIN, APPLOVIN_MAX, FAN_BIDDING_APPLOVIN_MAX init");
-            AppLovinSdk.getInstance(activity).setMediationProvider(AppLovinMediationProvider.MAX);
-            AppLovinSdk.getInstance(activity).initializeSdk(config -> {});
+            AppLovinSdk appLovinSdk;
+            AppLovinSdkSettings settings = new AppLovinSdkSettings(activity);
+            settings.setTestDeviceAdvertisingIds(Arrays.asList(GAID));
+            appLovinSdk = AppLovinSdk.getInstance(activity);
+            if (BuildConfig.DEBUG) {
+                appLovinSdk = AppLovinSdk.getInstance(settings, activity);
+            }
+            appLovinSdk.setMediationProvider(AppLovinMediationProvider.MAX);
+            appLovinSdk.initializeSdk(new AppLovinSdk.SdkInitializationListener() {
+                @Override
+                public void onSdkInitialized(AppLovinSdkConfiguration appLovinSdkConfiguration) {
+                    Log.d(TAG, "APPLOVIN, APPLOVIN_MAX, FAN_BIDDING_APPLOVIN_MAX onSdkInitialized");
+                }
+            });
             AudienceNetworkInitializeHelper.initialize(activity);
         }
 
@@ -179,6 +220,11 @@ public class AdNetwork {
     public boolean showInterstitialAd(boolean enable) {
         if (!ad_enable || !enable) return false;
         return interstitialAdFormat.showInterstitialAd();
+    }
+
+    public void setAdIntersListener(AdIntersListener adIntersListener) {
+        this.adIntersListener = adIntersListener;
+        interstitialAdFormat.setListener(this.adIntersListener);
     }
 
     public static void loadAndShowOpenAppAd(Context context, boolean enable, AdOpenListener listener) {
@@ -318,5 +364,8 @@ public class AdNetwork {
         return (dateDifference < (numMilliSecondsPerHour * numHours));
     }
 
+    public void destroyAndDetachBanner() {
+        bannerAdFormat.destroyAndDetachBanner(ad_networks);
+    }
 
 }

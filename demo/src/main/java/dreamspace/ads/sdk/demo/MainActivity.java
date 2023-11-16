@@ -13,11 +13,13 @@ import dreamspace.ads.sdk.gdpr.UMP;
 
 public class MainActivity extends AppCompatActivity {
 
+    AdNetwork adNetwork;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        AdNetwork adNetwork = new AdNetwork(this);
+        adNetwork = new AdNetwork(this);
         new UMP(this).loadShowConsentForm();
         AdConfig.ad_inters_interval = 2;
         AdConfig.retry_from_start_max = 2;
@@ -91,5 +93,11 @@ public class MainActivity extends AppCompatActivity {
         adNetwork.init();
         adNetwork.loadBannerAd(true, findViewById(R.id.banner_container));
         adNetwork.loadInterstitialAd(true);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        adNetwork.destroyAndDetachBanner();
     }
 }
