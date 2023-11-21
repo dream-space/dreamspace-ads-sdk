@@ -18,6 +18,7 @@ import dreamspace.ads.sdk.AdNetwork;
 public class ActivityListener implements ActivityLifecycleCallbacks, DefaultLifecycleObserver {
 
     private static final String TAG = ActivityListener.class.getSimpleName();
+    private static final String TAG2 = ActivityListener.class.getSimpleName();
 
     public static Activity currentActivity = null;
     private Application application;
@@ -26,7 +27,7 @@ public class ActivityListener implements ActivityLifecycleCallbacks, DefaultLife
         this.application = application;
         this.application.registerActivityLifecycleCallbacks(this);
         ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
-        //AdNetwork.loadOpenAppAd(application, AdConfig.ad_enable_open_app);
+        AdNetwork.loadOpenAppAd(application, AdConfig.ad_enable_open_app);
     }
 
     // when the app moves to foreground.
@@ -34,7 +35,8 @@ public class ActivityListener implements ActivityLifecycleCallbacks, DefaultLife
     public void onStart(@NonNull LifecycleOwner owner) {
         DefaultLifecycleObserver.super.onStart(owner);
         AdNetwork.showOpenAppAd(application, AdConfig.ad_enable_open_app);
-        Log.d(TAG, "onActivityCreated");
+        Log.d(TAG, "onStart");
+        Log.d(TAG2, "ActivityListener : onStart");
     }
 
     @Override

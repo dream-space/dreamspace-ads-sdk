@@ -8,6 +8,7 @@ public class AdConfig implements Serializable {
 
     public static boolean ad_enable = true;
     public static boolean ad_enable_open_app = true;
+    public static boolean ad_replace_unsupported_open_app_with_interstitial_on_splash = true;
     public static int limit_time_open_app_loading = 10;
     public static boolean debug_mode = true;
     public static boolean enable_gdpr = true;
@@ -27,9 +28,9 @@ public class AdConfig implements Serializable {
     public static String ad_admob_interstitial_unit_id = "ca-app-pub-3940256099942544/1033173712";
     public static String ad_admob_open_app_unit_id = "ca-app-pub-3940256099942544/3419835294";
 
-
     public static String ad_manager_banner_unit_id = "/6499/example/banner";
     public static String ad_manager_interstitial_unit_id = "/6499/example/interstitial";
+    public static String ad_manager_open_app_unit_id = "/6499/example/app-open";
 
     public static String ad_fan_banner_unit_id = "IMG_16_9_APP_INSTALL#YOUR_PLACEMENT_ID";
     public static String ad_fan_interstitial_unit_id = "IMG_16_9_APP_INSTALL#YOUR_PLACEMENT_ID";
@@ -44,6 +45,7 @@ public class AdConfig implements Serializable {
 
     public static String ad_applovin_banner_unit_id = "a3a3a5b44c763304";
     public static String ad_applovin_interstitial_unit_id = "35f9c01af124fcb9";
+    public static String ad_applovin_open_app_unit_id = "7c3fcecd43d3f90c";
 
     public static String ad_applovin_banner_zone_id = "df40a31072feccab";
     public static String ad_applovin_interstitial_zone_id = "d0eea040d4bd561e";
@@ -53,5 +55,6 @@ public class AdConfig implements Serializable {
     public static String ad_wortise_app_id = "test-app-id";
     public static String ad_wortise_banner_unit_id = "test-banner";
     public static String ad_wortise_interstitial_unit_id = "test-interstitial";
+    public static String ad_wortise_open_app_unit_id = "test-app-open";
 
 }

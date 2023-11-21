@@ -130,6 +130,14 @@
                     android:text="Inters All"
                     android:textColor="#3C3C3C" />
 
+                <Button
+                    android:id="@+id/openapp_all"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?android:selectableItemBackground"
+                    android:text="OPE APP All"
+                    android:textColor="#3C3C3C" />
+
             </LinearLayout>
 
         </LinearLayout>

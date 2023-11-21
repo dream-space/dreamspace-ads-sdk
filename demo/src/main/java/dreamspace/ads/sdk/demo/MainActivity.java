@@ -24,7 +24,6 @@ public class MainActivity extends AppCompatActivity {
         AdConfig.ad_inters_interval = 2;
         AdConfig.retry_from_start_max = 2;
 
-        AdConfig.ad_networks = new AdNetworkType[] { AdNetworkType.ADMOB };
         adNetwork.init();
 
         adNetwork.loadBannerAd(true, findViewById(R.id.banner_container));
@@ -81,6 +80,10 @@ public class MainActivity extends AppCompatActivity {
 
         ((Button) findViewById(R.id.inters_all)).setOnClickListener(view -> {
             adNetwork.showInterstitialAd(true);
+        });
+
+        ((Button) findViewById(R.id.inters_all)).setOnClickListener(view -> {
+            AdNetwork.showOpenAppAd(this, true);
         });
 
         ((Button) findViewById(R.id.next_activity)).setOnClickListener(view -> {

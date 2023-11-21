@@ -24,12 +24,9 @@ import static dreamspace.ads.sdk.data.AdNetworkType.UNITY;
 import static dreamspace.ads.sdk.data.AdNetworkType.WORTISE;
 
 import android.app.Activity;
-import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 import android.widget.LinearLayout;
-
-import androidx.annotation.NonNull;
 
 import com.applovin.sdk.AppLovinMediationProvider;
 import com.applovin.sdk.AppLovinSdk;
@@ -37,11 +34,7 @@ import com.applovin.sdk.AppLovinSdkConfiguration;
 import com.applovin.sdk.AppLovinSdkSettings;
 import com.facebook.ads.AdSettings;
 import com.facebook.ads.AudienceNetworkAds;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.FullScreenContentCallback;
-import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.appopen.AppOpenAd;
 import com.google.android.gms.ads.initialization.AdapterStatus;
 import com.ironsource.mediationsdk.IronSource;
 import com.startapp.sdk.adsbase.StartAppAd;
@@ -54,7 +47,6 @@ import com.wortise.ads.WortiseSdk;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -62,8 +54,8 @@ import dreamspace.ads.sdk.data.AdNetworkType;
 import dreamspace.ads.sdk.data.SharedPref;
 import dreamspace.ads.sdk.format.BannerAdFormat;
 import dreamspace.ads.sdk.format.InterstitialAdFormat;
+import dreamspace.ads.sdk.format.OpenAppAdFormat;
 import dreamspace.ads.sdk.helper.AudienceNetworkInitializeHelper;
-import dreamspace.ads.sdk.listener.ActivityListener;
 import dreamspace.ads.sdk.listener.AdIntersListener;
 import dreamspace.ads.sdk.listener.AdOpenListener;
 import dreamspace.ads.sdk.utils.Tools;
@@ -74,15 +66,11 @@ public class AdNetwork {
 
     private final Activity activity;
     private final SharedPref sharedPref;
-    private static long openApploadTime = 0;
+    private static OpenAppAdFormat openAppAdFormat;
     private static BannerAdFormat bannerAdFormat;
     private static InterstitialAdFormat interstitialAdFormat;
     public static String GAID = "";
 
-    // Open app admob
-    public static AppOpenAd appOpenAd = null;
-    private static boolean appOpenAdLoading = false;
-    private static ActivityListener activityListener = null;
     private static List<AdNetworkType> ad_networks = new ArrayList<>();
 
     private AdIntersListener adIntersListener = null;
@@ -90,13 +78,10 @@ public class AdNetwork {
     public AdNetwork(Activity activity) {
         this.activity = activity;
         sharedPref = new SharedPref(activity);
+        openAppAdFormat = new OpenAppAdFormat(activity);
         bannerAdFormat = new BannerAdFormat(activity);
         interstitialAdFormat = new InterstitialAdFormat(activity);
         Tools.getGAID(activity);
-    }
-
-    public static void initActivityListener(Application application) {
-        activityListener = new ActivityListener(application);
     }
 
     public void init() {
@@ -222,146 +207,22 @@ public class AdNetwork {
         return interstitialAdFormat.showInterstitialAd();
     }
 
-    public void setAdIntersListener(AdIntersListener adIntersListener) {
-        this.adIntersListener = adIntersListener;
-        interstitialAdFormat.setListener(this.adIntersListener);
-    }
-
-    public static void loadAndShowOpenAppAd(Context context, boolean enable, AdOpenListener listener) {
+    public void loadAndShowOpenAppAd(Activity activity, boolean enable, AdOpenListener listener) {
         if (!ad_enable || !enable) {
             if (listener != null) listener.onFinish();
             return;
         }
-        if (ad_networks == null || !ad_networks.contains(ADMOB)) {
-            if (listener != null) listener.onFinish();
-            return;
-        }
-        AdRequest request = new AdRequest.Builder().build();
-        String unit_id = new SharedPref(context).getOpenAppUnitId();
-        AppOpenAd.load(context, unit_id, request, new AppOpenAd.AppOpenAdLoadCallback() {
-            @Override
-            public void onAdLoaded(@NonNull AppOpenAd ad) {
-                super.onAdLoaded(ad);
-                AppOpenAd appOpenAd_ = ad;
-                FullScreenContentCallback fullScreenContentCallback = new FullScreenContentCallback() {
-                    @Override
-                    public void onAdDismissedFullScreenContent() {
-                        if (listener != null) listener.onFinish();
-                        //loadOpenAppAd(context, true);
-                    }
-
-                    @Override
-                    public void onAdFailedToShowFullScreenContent(com.google.android.gms.ads.AdError adError) {
-                        if (listener != null) listener.onFinish();
-                        //loadOpenAppAd(context, true);
-                    }
-
-                    @Override
-                    public void onAdShowedFullScreenContent() {
-
-                    }
-                };
-
-                appOpenAd_.setFullScreenContentCallback(fullScreenContentCallback);
-                if (activityListener != null && ActivityListener.currentActivity != null) {
-                    appOpenAd_.show(ActivityListener.currentActivity);
-                } else {
-                    if (listener != null) listener.onFinish();
-                }
-                Log.d(TAG, "ADMOB Open App loaded");
-            }
-
-            @Override
-            public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
-                super.onAdFailedToLoad(loadAdError);
-                if (listener != null) listener.onFinish();
-                Log.d(TAG, "ADMOB Open App load failed : " + loadAdError.getMessage());
-            }
-
-        });
+        openAppAdFormat.loadAndShowOpenAppAd(0, 0, listener);
     }
 
     public static void loadOpenAppAd(Context context, boolean enable) {
         if (!ad_enable || !enable) return;
-        if (ad_networks == null || !ad_networks.contains(ADMOB)) {
-            return;
-        }
-        AdRequest request = new AdRequest.Builder().build();
-        appOpenAdLoading = true;
-        String unit_id = new SharedPref(context).getOpenAppUnitId();
-        AppOpenAd.load(context, unit_id, request, new AppOpenAd.AppOpenAdLoadCallback() {
-            @Override
-            public void onAdLoaded(@NonNull AppOpenAd ad) {
-                super.onAdLoaded(ad);
-                appOpenAd = ad;
-                appOpenAdLoading = false;
-                openApploadTime = (new Date()).getTime();
-                Log.d(TAG, "ADMOB Open App loaded");
-            }
-
-            @Override
-            public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
-                super.onAdFailedToLoad(loadAdError);
-                appOpenAdLoading = false;
-                Log.d(TAG, "ADMOB Open App load failed : " + loadAdError.getMessage());
-            }
-
-        });
+        OpenAppAdFormat.loadOpenAppAd(context, 0, 0);
     }
 
     public static void showOpenAppAd(Context context, boolean enable) {
-        showOpenAppAdCore(context, enable, null);
-    }
-
-    public static void showOpenAppAd(Context context, boolean enable, AdOpenListener listener) {
-        showOpenAppAdCore(context, enable, listener);
-    }
-
-    public static void showOpenAppAdCore(Context context, boolean enable, AdOpenListener listener) {
-        if (!ad_enable || !enable || appOpenAdLoading) {
-            if (listener != null) listener.onFinish();
-            return;
-        }
-        if (ad_networks == null || !ad_networks.contains(ADMOB)) {
-            if (listener != null) listener.onFinish();
-            return;
-        }
-        if (!wasLoadTimeLessThanNHoursAgo(4)) {
-            if (listener != null) listener.onFinish();
-            loadOpenAppAd(context, true);
-            return;
-        }
-        if (appOpenAd != null && activityListener != null && ActivityListener.currentActivity != null) {
-            FullScreenContentCallback fullScreenContentCallback = new FullScreenContentCallback() {
-                @Override
-                public void onAdDismissedFullScreenContent() {
-                    loadOpenAppAd(context, true);
-                    if (listener != null) listener.onFinish();
-                }
-
-                @Override
-                public void onAdFailedToShowFullScreenContent(com.google.android.gms.ads.AdError adError) {
-                    loadOpenAppAd(context, true);
-                    if (listener != null) listener.onFinish();
-                }
-
-                @Override
-                public void onAdShowedFullScreenContent() {
-
-                }
-            };
-
-            appOpenAd.setFullScreenContentCallback(fullScreenContentCallback);
-            appOpenAd.show(ActivityListener.currentActivity);
-            Log.d(TAG, "ADMOB Open App show");
-        }
-    }
-
-    // check if ad was loaded more than n hours ago.
-    private static boolean wasLoadTimeLessThanNHoursAgo(long numHours) {
-        long dateDifference = (new Date()).getTime() - openApploadTime;
-        long numMilliSecondsPerHour = 3600000;
-        return (dateDifference < (numMilliSecondsPerHour * numHours));
+        if (!ad_enable || !enable) return;
+        OpenAppAdFormat.showOpenAppAd(context);
     }
 
     public void destroyAndDetachBanner() {
