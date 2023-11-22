@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         adNetwork = new AdNetwork(this);
-        new UMP(this).loadShowConsentForm();
+        adNetwork.loadShowUMPConsentForm();
         AdConfig.ad_inters_interval = 2;
         AdConfig.retry_from_start_max = 2;
 

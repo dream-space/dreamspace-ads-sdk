@@ -60,6 +60,7 @@ import dreamspace.ads.sdk.format.BannerAdFormat;
 import dreamspace.ads.sdk.format.InterstitialAdFormat;
 import dreamspace.ads.sdk.format.OpenAppAdFormat;
 import dreamspace.ads.sdk.format.RewardAdFormat;
+import dreamspace.ads.sdk.gdpr.UMP;
 import dreamspace.ads.sdk.helper.AudienceNetworkInitializeHelper;
 import dreamspace.ads.sdk.listener.AdOpenListener;
 import dreamspace.ads.sdk.listener.AdRewardedListener;
@@ -243,6 +244,10 @@ public class AdNetwork {
     public void destroyAndDetachBanner() {
         if (bannerAdFormat == null) return;
         bannerAdFormat.destroyAndDetachBanner(ad_networks);
+    }
+
+    public void loadShowUMPConsentForm(){
+        new UMP(activity).loadShowConsentForm();
     }
 
 }
