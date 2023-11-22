@@ -10,7 +10,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import dreamspace.ads.sdk.AdConfig;
 import dreamspace.ads.sdk.AdNetwork;
 import dreamspace.ads.sdk.data.AdNetworkType;
-import dreamspace.ads.sdk.gdpr.UMP;
 import dreamspace.ads.sdk.listener.AdRewardedListener;
 
 public class MainActivity extends AppCompatActivity {
