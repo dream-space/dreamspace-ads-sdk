@@ -7,11 +7,7 @@ import static dreamspace.ads.sdk.AdConfig.ad_enable_banner;
 import static dreamspace.ads.sdk.AdConfig.ad_enable_interstitial;
 import static dreamspace.ads.sdk.AdConfig.ad_enable_open_app;
 import static dreamspace.ads.sdk.AdConfig.ad_enable_rewarded;
-import static dreamspace.ads.sdk.AdConfig.ad_ironsource_app_key;
 import static dreamspace.ads.sdk.AdConfig.ad_network;
-import static dreamspace.ads.sdk.AdConfig.ad_startapp_app_id;
-import static dreamspace.ads.sdk.AdConfig.ad_unity_game_id;
-import static dreamspace.ads.sdk.AdConfig.ad_wortise_app_id;
 import static dreamspace.ads.sdk.data.AdNetworkType.ADMOB;
 import static dreamspace.ads.sdk.data.AdNetworkType.APPLOVIN;
 import static dreamspace.ads.sdk.data.AdNetworkType.APPLOVIN_DISCOVERY;
@@ -20,12 +16,7 @@ import static dreamspace.ads.sdk.data.AdNetworkType.FAN;
 import static dreamspace.ads.sdk.data.AdNetworkType.FAN_BIDDING_ADMOB;
 import static dreamspace.ads.sdk.data.AdNetworkType.FAN_BIDDING_AD_MANAGER;
 import static dreamspace.ads.sdk.data.AdNetworkType.FAN_BIDDING_APPLOVIN_MAX;
-import static dreamspace.ads.sdk.data.AdNetworkType.FAN_BIDDING_IRONSOURCE;
-import static dreamspace.ads.sdk.data.AdNetworkType.IRONSOURCE;
 import static dreamspace.ads.sdk.data.AdNetworkType.MANAGER;
-import static dreamspace.ads.sdk.data.AdNetworkType.STARTAPP;
-import static dreamspace.ads.sdk.data.AdNetworkType.UNITY;
-import static dreamspace.ads.sdk.data.AdNetworkType.WORTISE;
 
 import android.app.Activity;
 import android.content.Context;
@@ -40,14 +31,6 @@ import com.facebook.ads.AdSettings;
 import com.facebook.ads.AudienceNetworkAds;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.initialization.AdapterStatus;
-import com.ironsource.mediationsdk.IronSource;
-import com.startapp.sdk.adsbase.StartAppAd;
-import com.startapp.sdk.adsbase.StartAppSDK;
-import com.unity3d.mediation.IInitializationListener;
-import com.unity3d.mediation.InitializationConfiguration;
-import com.unity3d.mediation.UnityMediation;
-import com.unity3d.mediation.errors.SdkInitializationError;
-import com.wortise.ads.WortiseSdk;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -123,36 +106,6 @@ public class AdNetwork {
             AdSettings.setIntegrationErrorMode(INTEGRATION_ERROR_CALLBACK_MODE);
         }
 
-        // init iron source
-        if (Tools.contains(ad_networks, IRONSOURCE, FAN_BIDDING_IRONSOURCE)) {
-            Log.d(TAG, "IRONSOURCE init");
-            String advertisingId = IronSource.getAdvertiserId(activity);
-            IronSource.setUserId(advertisingId);
-            IronSource.init(activity, ad_ironsource_app_key, () -> {
-                Log.d(TAG, "IRONSOURCE onInitializationComplete");
-            });
-        }
-
-        // init unity
-        if (Tools.contains(ad_networks, UNITY)) {
-            Log.d(TAG, "UNITY init");
-
-            InitializationConfiguration configuration = InitializationConfiguration.builder()
-                    .setGameId(ad_unity_game_id)
-                    .setInitializationListener(new IInitializationListener() {
-                        @Override
-                        public void onInitializationComplete() {
-                            Log.d(TAG, "UNITY onInitializationComplete");
-                        }
-
-                        @Override
-                        public void onInitializationFailed(SdkInitializationError sdkInitializationError, String s) {
-
-                        }
-                    }).build();
-            UnityMediation.initialize(configuration);
-        }
-
         // init applovin
         if (Tools.contains(ad_networks, APPLOVIN, APPLOVIN_MAX, FAN_BIDDING_APPLOVIN_MAX)) {
             Log.d(TAG, "APPLOVIN, APPLOVIN_MAX, FAN_BIDDING_APPLOVIN_MAX init");
@@ -177,21 +130,6 @@ public class AdNetwork {
         if (Tools.contains(ad_networks, APPLOVIN_DISCOVERY)) {
             Log.d(TAG, "APPLOVIN_DISCOVERY init");
             AppLovinSdk.initializeSdk(activity);
-        }
-
-        // init startapp
-        if (Tools.contains(ad_networks, STARTAPP)) {
-            Log.d(TAG, "STARTAPP init");
-            StartAppSDK.init(activity, ad_startapp_app_id, false);
-            StartAppSDK.setTestAdsEnabled(BuildConfig.DEBUG);
-            StartAppAd.disableSplash();
-            StartAppSDK.setUserConsent(activity, "pas", System.currentTimeMillis(), true);
-        }
-
-        // init startapp
-        if (Tools.contains(ad_networks, WORTISE)) {
-            Log.d(TAG, "WORTISE init");
-            WortiseSdk.initialize(activity, ad_wortise_app_id);
         }
 
         // save to shared pref
@@ -246,7 +184,7 @@ public class AdNetwork {
         bannerAdFormat.destroyAndDetachBanner(ad_networks);
     }
 
-    public void loadShowUMPConsentForm(){
+    public void loadShowUMPConsentForm() {
         new UMP(activity).loadShowConsentForm();
     }
 
