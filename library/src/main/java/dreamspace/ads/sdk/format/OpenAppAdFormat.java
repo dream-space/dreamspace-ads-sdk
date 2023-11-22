@@ -1,79 +1,34 @@
 package dreamspace.ads.sdk.format;
 
 import static dreamspace.ads.sdk.AdConfig.ad_admob_open_app_unit_id;
-import static dreamspace.ads.sdk.AdConfig.ad_applovin_interstitial_zone_id;
-import static dreamspace.ads.sdk.AdConfig.ad_applovin_open_app_unit_id;
-import static dreamspace.ads.sdk.AdConfig.ad_fan_interstitial_unit_id;
 import static dreamspace.ads.sdk.AdConfig.ad_manager_open_app_unit_id;
 import static dreamspace.ads.sdk.AdConfig.ad_networks;
-import static dreamspace.ads.sdk.AdConfig.ad_replace_unsupported_open_app_with_interstitial_on_splash;
-import static dreamspace.ads.sdk.AdConfig.ad_unity_interstitial_unit_id;
-import static dreamspace.ads.sdk.AdConfig.ad_wortise_open_app_unit_id;
 import static dreamspace.ads.sdk.AdConfig.retry_from_start_max;
 import static dreamspace.ads.sdk.data.AdNetworkType.ADMOB;
-import static dreamspace.ads.sdk.data.AdNetworkType.APPLOVIN;
-import static dreamspace.ads.sdk.data.AdNetworkType.APPLOVIN_DISCOVERY;
-import static dreamspace.ads.sdk.data.AdNetworkType.APPLOVIN_MAX;
-import static dreamspace.ads.sdk.data.AdNetworkType.FAN;
 import static dreamspace.ads.sdk.data.AdNetworkType.FAN_BIDDING_ADMOB;
 import static dreamspace.ads.sdk.data.AdNetworkType.FAN_BIDDING_AD_MANAGER;
-import static dreamspace.ads.sdk.data.AdNetworkType.FAN_BIDDING_APPLOVIN_MAX;
-import static dreamspace.ads.sdk.data.AdNetworkType.FAN_BIDDING_IRONSOURCE;
-import static dreamspace.ads.sdk.data.AdNetworkType.IRONSOURCE;
 import static dreamspace.ads.sdk.data.AdNetworkType.MANAGER;
-import static dreamspace.ads.sdk.data.AdNetworkType.STARTAPP;
-import static dreamspace.ads.sdk.data.AdNetworkType.UNITY;
-import static dreamspace.ads.sdk.data.AdNetworkType.WORTISE;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
-import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
-import com.applovin.adview.AppLovinInterstitialAd;
-import com.applovin.adview.AppLovinInterstitialAdDialog;
-import com.applovin.mediation.MaxAd;
-import com.applovin.mediation.MaxAdListener;
-import com.applovin.mediation.MaxError;
-import com.applovin.mediation.ads.MaxAppOpenAd;
-import com.applovin.sdk.AppLovinAd;
-import com.applovin.sdk.AppLovinAdDisplayListener;
-import com.applovin.sdk.AppLovinAdLoadListener;
-import com.applovin.sdk.AppLovinAdSize;
-import com.applovin.sdk.AppLovinSdk;
-import com.facebook.ads.Ad;
-import com.facebook.ads.InterstitialAdListener;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.admanager.AdManagerAdRequest;
 import com.google.android.gms.ads.appopen.AppOpenAd;
-import com.ironsource.mediationsdk.IronSource;
-import com.ironsource.mediationsdk.adunit.adapter.utility.AdInfo;
-import com.ironsource.mediationsdk.logger.IronSourceError;
-import com.ironsource.mediationsdk.sdk.LevelPlayInterstitialListener;
-import com.startapp.sdk.adsbase.StartAppAd;
-import com.startapp.sdk.adsbase.adlisteners.AdDisplayListener;
-import com.startapp.sdk.adsbase.adlisteners.AdEventListener;
-import com.unity3d.mediation.IInterstitialAdLoadListener;
-import com.unity3d.mediation.IInterstitialAdShowListener;
-import com.unity3d.mediation.InterstitialAd;
-import com.unity3d.mediation.errors.LoadError;
-import com.unity3d.mediation.errors.ShowError;
 
 import java.util.Date;
 
-import dreamspace.ads.sdk.AdConfig;
 import dreamspace.ads.sdk.AdNetwork;
 import dreamspace.ads.sdk.data.AdNetworkType;
-import dreamspace.ads.sdk.helper.AppLovinCustomEventInterstitial;
 import dreamspace.ads.sdk.listener.ActivityListener;
 import dreamspace.ads.sdk.listener.AdOpenListener;
 
@@ -92,8 +47,6 @@ public class OpenAppAdFormat {
     public static int last_open_app_index = -1;
     public static AppOpenAd ad_admob_appOpenAd = null;
     public static com.google.android.gms.ads.appopen.AppOpenAd ad_manager_appOpenAd = null;
-    public static MaxAppOpenAd ad_applovin_appOpenAd = null;
-    public static com.wortise.ads.appopen.AppOpenAd ad_wortise_appOpenAd = null;
     private static ActivityListener activityListener = null;
 
     public OpenAppAdFormat(Activity activity) {
@@ -176,262 +129,6 @@ public class OpenAppAdFormat {
                     retryLoadAndShowOpenAppAd(ad_index, retry_count, listener);
                 }
             });
-        } else if (type == FAN && ad_replace_unsupported_open_app_with_interstitial_on_splash) {
-            com.facebook.ads.InterstitialAd fanInterstitialAd = new com.facebook.ads.InterstitialAd(activity, ad_fan_interstitial_unit_id);
-            InterstitialAdListener interstitialAdListener = new InterstitialAdListener() {
-                @Override
-                public void onInterstitialDisplayed(Ad ad) {
-
-                }
-
-                @Override
-                public void onInterstitialDismissed(Ad ad) {
-                    openAppSplashFinish(listener);
-                }
-
-                @Override
-                public void onError(Ad ad, com.facebook.ads.AdError adError) {
-                    Log.d(TAG, type + " Open App load failed _ splash : " + adError.getErrorMessage());
-                    retryLoadAndShowOpenAppAd(ad_index, retry_count, listener);
-                }
-
-                @Override
-                public void onAdLoaded(Ad ad) {
-                    Log.d(TAG, type + " Open App loaded _ splash");
-                    loadTime = (new Date()).getTime();
-                    fanInterstitialAd.show();
-                }
-
-                @Override
-                public void onAdClicked(Ad ad) {
-                }
-
-                @Override
-                public void onLoggingImpression(Ad ad) {
-                }
-            };
-
-            // load ads
-            fanInterstitialAd.loadAd(fanInterstitialAd.buildLoadAdConfig().withAdListener(interstitialAdListener).build());
-
-        } else if ((type == IRONSOURCE || type == FAN_BIDDING_IRONSOURCE) && ad_replace_unsupported_open_app_with_interstitial_on_splash) {
-            IronSource.setLevelPlayInterstitialListener(new LevelPlayInterstitialListener() {
-                @Override
-                public void onAdReady(AdInfo adInfo) {
-                    Log.d(TAG, type + " Open App loaded _ splash");
-                    loadTime = (new Date()).getTime();
-                    IronSource.showInterstitial(AdConfig.ad_ironsource_interstitial_unit_id);
-                }
-
-                @Override
-                public void onAdLoadFailed(IronSourceError ironSourceError) {
-                    Log.d(TAG, type + " Open App load failed _ splash : " + ironSourceError.getErrorMessage());
-                    retryLoadAndShowOpenAppAd(ad_index, retry_count, listener);
-                }
-
-                @Override
-                public void onAdOpened(AdInfo adInfo) {
-
-                }
-
-                @Override
-                public void onAdShowSucceeded(AdInfo adInfo) {
-
-                }
-
-                @Override
-                public void onAdShowFailed(IronSourceError ironSourceError, AdInfo adInfo) {
-                    openAppSplashFinish(listener);
-                }
-
-                @Override
-                public void onAdClicked(AdInfo adInfo) {
-
-                }
-
-                @Override
-                public void onAdClosed(AdInfo adInfo) {
-                    openAppSplashFinish(listener);
-                }
-            });
-            IronSource.loadInterstitial();
-        } else if (type == UNITY && ad_replace_unsupported_open_app_with_interstitial_on_splash) {
-            com.unity3d.mediation.InterstitialAd unityInterstitialAd = new com.unity3d.mediation.InterstitialAd(activity, ad_unity_interstitial_unit_id);
-            final IInterstitialAdLoadListener unityAdLoadListener = new IInterstitialAdLoadListener() {
-                @Override
-                public void onInterstitialLoaded(com.unity3d.mediation.InterstitialAd interstitialAd) {
-                    Log.d(TAG, type + " Open App loaded _ splash ");
-                    loadTime = (new Date()).getTime();
-                    unityInterstitialAd.show(new IInterstitialAdShowListener() {
-                        @Override
-                        public void onInterstitialShowed(InterstitialAd interstitialAd) {
-
-                        }
-
-                        @Override
-                        public void onInterstitialClicked(InterstitialAd interstitialAd) {
-
-                        }
-
-                        @Override
-                        public void onInterstitialClosed(InterstitialAd interstitialAd) {
-                            openAppSplashFinish(listener);
-                        }
-
-                        @Override
-                        public void onInterstitialFailedShow(InterstitialAd interstitialAd, ShowError showError, String s) {
-                            openAppSplashFinish(listener);
-                        }
-                    });
-                }
-
-                @Override
-                public void onInterstitialFailedLoad(com.unity3d.mediation.InterstitialAd interstitialAd, LoadError loadError, String s) {
-                    Log.d(TAG, type + " Open App load failed _ splash : " + s);
-                    retryLoadAndShowOpenAppAd(ad_index, retry_count, listener);
-                }
-
-            };
-            unityInterstitialAd.load(unityAdLoadListener);
-        } else if (type == STARTAPP && ad_replace_unsupported_open_app_with_interstitial_on_splash) {
-            StartAppAd startAppAd = new StartAppAd(activity);
-            startAppAd.loadAd(new AdEventListener() {
-                @Override
-                public void onReceiveAd(@NonNull com.startapp.sdk.adsbase.Ad ad) {
-                    Log.d(TAG, type + " Open App loaded _ splash");
-                    loadTime = (new Date()).getTime();
-                    startAppAd.showAd(new AdDisplayListener() {
-                        @Override
-                        public void adHidden(com.startapp.sdk.adsbase.Ad ad) {
-                            openAppSplashFinish(listener);
-                        }
-
-                        @Override
-                        public void adDisplayed(com.startapp.sdk.adsbase.Ad ad) {
-
-                        }
-
-                        @Override
-                        public void adClicked(com.startapp.sdk.adsbase.Ad ad) {
-
-                        }
-
-                        @Override
-                        public void adNotDisplayed(com.startapp.sdk.adsbase.Ad ad) {
-                            openAppSplashFinish(listener);
-                        }
-                    });
-                }
-
-                @Override
-                public void onFailedToReceiveAd(@Nullable com.startapp.sdk.adsbase.Ad ad) {
-                    retryLoadAndShowOpenAppAd(ad_index, retry_count, listener);
-                    assert ad != null;
-                    Log.d(TAG, type + " Open App load failed _ splash : " + ad.getErrorMessage());
-                }
-
-
-            });
-        } else if (type == APPLOVIN || type == APPLOVIN_MAX || type == FAN_BIDDING_APPLOVIN_MAX) {
-            MaxAppOpenAd maxAppOpenAd = new MaxAppOpenAd(ad_applovin_open_app_unit_id, activity);
-            maxAppOpenAd.setListener(new MaxAdListener() {
-                @Override
-                public void onAdLoaded(MaxAd ad) {
-                    Log.d(TAG, type + " Open App loaded _ splash");
-                    loadTime = (new Date()).getTime();
-                    maxAppOpenAd.showAd();
-                }
-
-                @Override
-                public void onAdDisplayed(MaxAd ad) {
-                }
-
-                @Override
-                public void onAdHidden(MaxAd ad) {
-                    openAppSplashFinish(listener);
-                }
-
-                @Override
-                public void onAdClicked(MaxAd ad) {
-                }
-
-                @Override
-                public void onAdLoadFailed(String adUnitId, MaxError error) {
-                    Log.d(TAG, type + " Open App load failed _ splash : " + error.getMessage());
-                    retryLoadAndShowOpenAppAd(ad_index, retry_count, listener);
-                }
-
-                @Override
-                public void onAdDisplayFailed(MaxAd ad, MaxError error) {
-                    openAppSplashFinish(listener);
-                }
-            });
-            maxAppOpenAd.loadAd();
-
-        } else if (type == APPLOVIN_DISCOVERY && ad_replace_unsupported_open_app_with_interstitial_on_splash) {
-            AdRequest.Builder builder = new AdRequest.Builder();
-            Bundle interstitialExtras = new Bundle();
-            interstitialExtras.putString("zone_id", ad_applovin_interstitial_zone_id);
-            builder.addCustomEventExtrasBundle(AppLovinCustomEventInterstitial.class, interstitialExtras);
-            AppLovinInterstitialAdDialog appLovinInterstitialAdDialog = AppLovinInterstitialAd.create(AppLovinSdk.getInstance(activity), activity);
-            AppLovinSdk.getInstance(activity).getAdService().loadNextAd(AppLovinAdSize.INTERSTITIAL, new AppLovinAdLoadListener() {
-                @Override
-                public void adReceived(AppLovinAd ad) {
-                    Log.d(TAG, type + " Open App loaded _ splash");
-                    loadTime = (new Date()).getTime();
-                    appLovinInterstitialAdDialog.showAndRender(ad);
-                    appLovinInterstitialAdDialog.setAdDisplayListener(new AppLovinAdDisplayListener() {
-                        @Override
-                        public void adDisplayed(AppLovinAd appLovinAd) {
-
-                        }
-
-                        @Override
-                        public void adHidden(AppLovinAd appLovinAd) {
-                            openAppSplashFinish(listener);
-                        }
-                    });
-                }
-
-                @Override
-                public void failedToReceiveAd(int errorCode) {
-                    Log.d(TAG, type + " Open App load failed _ splash : " + errorCode);
-                    retryLoadAndShowOpenAppAd(ad_index, retry_count, listener);
-                }
-
-            });
-        } else if (type == WORTISE) {
-            com.wortise.ads.appopen.AppOpenAd wortiseAppOpenAd = new com.wortise.ads.appopen.AppOpenAd(activity, ad_wortise_open_app_unit_id);
-            wortiseAppOpenAd.setListener(new com.wortise.ads.appopen.AppOpenAd.Listener() {
-                @Override
-                public void onAppOpenClicked(@NonNull com.wortise.ads.appopen.AppOpenAd appOpenAd) {
-
-                }
-
-                @Override
-                public void onAppOpenDismissed(@NonNull com.wortise.ads.appopen.AppOpenAd appOpenAd) {
-                    openAppSplashFinish(listener);
-                }
-
-                @Override
-                public void onAppOpenFailed(@NonNull com.wortise.ads.appopen.AppOpenAd appOpenAd, @NonNull com.wortise.ads.AdError adError) {
-                    Log.d(TAG, type + " Open App load failed : " + adError.toString());
-                    retryLoadAndShowOpenAppAd(ad_index, retry_count, listener);
-                }
-
-                @Override
-                public void onAppOpenLoaded(@NonNull com.wortise.ads.appopen.AppOpenAd appOpenAd) {
-                    Log.d(TAG, type + " Open App loaded");
-                    loadTime = (new Date()).getTime();
-                    appOpenAd.showAd(activity);
-                }
-
-                @Override
-                public void onAppOpenShown(@NonNull com.wortise.ads.appopen.AppOpenAd appOpenAd) {
-
-                }
-            });
-            wortiseAppOpenAd.loadAd();
         } else {
             openAppSplashFinish(listener);
         }
@@ -451,7 +148,7 @@ public class OpenAppAdFormat {
         }, 500);
     }
 
-    public void openAppSplashFinish(AdOpenListener listener){
+    public void openAppSplashFinish(AdOpenListener listener) {
         if (listener != null) {
             listener.onFinish();
         }
@@ -508,77 +205,6 @@ public class OpenAppAdFormat {
                     retryLoadOpenAppAd(context, ad_index, retry_count);
                 }
             });
-        } else if (type == APPLOVIN || type == APPLOVIN_MAX || type == FAN_BIDDING_APPLOVIN_MAX) {
-            ad_applovin_appOpenAd = new MaxAppOpenAd(ad_applovin_open_app_unit_id, context);
-            ad_applovin_appOpenAd.setListener(new MaxAdListener() {
-                @Override
-                public void onAdLoaded(MaxAd ad) {
-                    Log.d(TAG, type + " Open App loaded");
-                    isLoadingAd = false;
-                    loadTime = (new Date()).getTime();
-                }
-
-                @Override
-                public void onAdDisplayed(MaxAd ad) {
-                }
-
-                @Override
-                public void onAdHidden(MaxAd ad) {
-
-                }
-
-                @Override
-                public void onAdClicked(MaxAd ad) {
-                }
-
-                @Override
-                public void onAdLoadFailed(String adUnitId, MaxError error) {
-                    Log.d(TAG, type + " Open App load failed : " + error.getMessage());
-                    isLoadingAd = false;
-                    retryLoadOpenAppAd(context, ad_index, retry_count);
-                }
-
-                @Override
-                public void onAdDisplayFailed(MaxAd ad, MaxError error) {
-
-                }
-            });
-            ad_applovin_appOpenAd.loadAd();
-
-        } else if (type == WORTISE) {
-            com.wortise.ads.appopen.AppOpenAd wortiseAppOpenAd = new com.wortise.ads.appopen.AppOpenAd(context, ad_wortise_open_app_unit_id);
-            wortiseAppOpenAd.setListener(new com.wortise.ads.appopen.AppOpenAd.Listener() {
-                @Override
-                public void onAppOpenClicked(@NonNull com.wortise.ads.appopen.AppOpenAd appOpenAd) {
-
-                }
-
-                @Override
-                public void onAppOpenDismissed(@NonNull com.wortise.ads.appopen.AppOpenAd appOpenAd) {
-
-                }
-
-                @Override
-                public void onAppOpenFailed(@NonNull com.wortise.ads.appopen.AppOpenAd appOpenAd, @NonNull com.wortise.ads.AdError adError) {
-                    Log.d(TAG, type + " Open App load failed : " + adError.toString());
-                    isLoadingAd = false;
-                    retryLoadOpenAppAd(context, ad_index, retry_count);
-                }
-
-                @Override
-                public void onAppOpenLoaded(@NonNull com.wortise.ads.appopen.AppOpenAd appOpenAd) {
-                    Log.d(TAG, type + " Open App loaded");
-                    isLoadingAd = false;
-                    ad_wortise_appOpenAd = appOpenAd;
-                    loadTime = (new Date()).getTime();
-                }
-
-                @Override
-                public void onAppOpenShown(@NonNull com.wortise.ads.appopen.AppOpenAd appOpenAd) {
-
-                }
-            });
-            wortiseAppOpenAd.loadAd();
         } else {
             isLoadingAd = false;
         }
@@ -623,12 +249,6 @@ public class OpenAppAdFormat {
         } else if (type == MANAGER || type == FAN_BIDDING_AD_MANAGER) {
             if (ad_manager_appOpenAd == null) return;
             ad_manager_appOpenAd.show(ActivityListener.currentActivity);
-        } else if (type == APPLOVIN || type == APPLOVIN_MAX || type == FAN_BIDDING_APPLOVIN_MAX) {
-            if (ad_applovin_appOpenAd == null || !ad_applovin_appOpenAd.isReady()) return;
-            ad_applovin_appOpenAd.showAd();
-        } else if (type == WORTISE) {
-            if (ad_wortise_appOpenAd == null) return;
-            ad_wortise_appOpenAd.showAd(ActivityListener.currentActivity);
         }
         Log.d(TAG, type + " showOpenAppAd");
     }
