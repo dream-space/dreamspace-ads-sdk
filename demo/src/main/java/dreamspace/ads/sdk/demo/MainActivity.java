@@ -3,6 +3,7 @@ package dreamspace.ads.sdk.demo;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -10,6 +11,7 @@ import dreamspace.ads.sdk.AdConfig;
 import dreamspace.ads.sdk.AdNetwork;
 import dreamspace.ads.sdk.data.AdNetworkType;
 import dreamspace.ads.sdk.gdpr.UMP;
+import dreamspace.ads.sdk.listener.AdRewardedListener;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,6 +30,22 @@ public class MainActivity extends AppCompatActivity {
 
         adNetwork.loadBannerAd(true, findViewById(R.id.banner_container));
         adNetwork.loadInterstitialAd(true);
+        adNetwork.loadRewardedAd(true, new AdRewardedListener() {
+            @Override
+            public void onComplete() {
+
+            }
+
+            @Override
+            public void onDismissed() {
+
+            }
+
+            @Override
+            public void onError() {
+
+            }
+        });
 
         ((Button) findViewById(R.id.banner_admob)).setOnClickListener(view -> {
             AdConfig.ad_networks = new AdNetworkType[] { AdNetworkType.ADMOB };
@@ -82,8 +100,27 @@ public class MainActivity extends AppCompatActivity {
             adNetwork.showInterstitialAd(true);
         });
 
-        ((Button) findViewById(R.id.inters_all)).setOnClickListener(view -> {
+        ((Button) findViewById(R.id.openapp_all)).setOnClickListener(view -> {
             AdNetwork.showOpenAppAd(this, true);
+        });
+
+        ((Button) findViewById(R.id.rewarded_all)).setOnClickListener(view -> {
+            adNetwork.showRewardedAd(true, new AdRewardedListener() {
+                @Override
+                public void onComplete() {
+                    Toast.makeText(getApplicationContext(), "Rewarded complete", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onDismissed() {
+
+                }
+
+                @Override
+                public void onError() {
+                    Toast.makeText(getApplicationContext(), "Rewarded error", Toast.LENGTH_SHORT).show();
+                }
+            });
         });
 
         ((Button) findViewById(R.id.next_activity)).setOnClickListener(view -> {
@@ -96,6 +133,22 @@ public class MainActivity extends AppCompatActivity {
         adNetwork.init();
         adNetwork.loadBannerAd(true, findViewById(R.id.banner_container));
         adNetwork.loadInterstitialAd(true);
+        adNetwork.loadRewardedAd(true, new AdRewardedListener() {
+            @Override
+            public void onComplete() {
+
+            }
+
+            @Override
+            public void onDismissed() {
+
+            }
+
+            @Override
+            public void onError() {
+
+            }
+        });
     }
 
     @Override

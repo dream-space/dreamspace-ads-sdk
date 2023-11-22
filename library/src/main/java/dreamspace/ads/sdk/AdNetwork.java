@@ -3,6 +3,10 @@ package dreamspace.ads.sdk;
 import static com.facebook.ads.AdSettings.IntegrationErrorMode.INTEGRATION_ERROR_CALLBACK_MODE;
 import static dreamspace.ads.sdk.AdConfig.ad_admob_open_app_unit_id;
 import static dreamspace.ads.sdk.AdConfig.ad_enable;
+import static dreamspace.ads.sdk.AdConfig.ad_enable_banner;
+import static dreamspace.ads.sdk.AdConfig.ad_enable_interstitial;
+import static dreamspace.ads.sdk.AdConfig.ad_enable_open_app;
+import static dreamspace.ads.sdk.AdConfig.ad_enable_rewarded;
 import static dreamspace.ads.sdk.AdConfig.ad_ironsource_app_key;
 import static dreamspace.ads.sdk.AdConfig.ad_network;
 import static dreamspace.ads.sdk.AdConfig.ad_startapp_app_id;
@@ -55,9 +59,10 @@ import dreamspace.ads.sdk.data.SharedPref;
 import dreamspace.ads.sdk.format.BannerAdFormat;
 import dreamspace.ads.sdk.format.InterstitialAdFormat;
 import dreamspace.ads.sdk.format.OpenAppAdFormat;
+import dreamspace.ads.sdk.format.RewardAdFormat;
 import dreamspace.ads.sdk.helper.AudienceNetworkInitializeHelper;
-import dreamspace.ads.sdk.listener.AdIntersListener;
 import dreamspace.ads.sdk.listener.AdOpenListener;
+import dreamspace.ads.sdk.listener.AdRewardedListener;
 import dreamspace.ads.sdk.utils.Tools;
 
 public class AdNetwork {
@@ -66,21 +71,21 @@ public class AdNetwork {
 
     private final Activity activity;
     private final SharedPref sharedPref;
-    private static OpenAppAdFormat openAppAdFormat;
     private static BannerAdFormat bannerAdFormat;
     private static InterstitialAdFormat interstitialAdFormat;
+    private static RewardAdFormat rewardAdFormat;
+    private static OpenAppAdFormat openAppAdFormat;
     public static String GAID = "";
 
     private static List<AdNetworkType> ad_networks = new ArrayList<>();
 
-    private AdIntersListener adIntersListener = null;
-
     public AdNetwork(Activity activity) {
         this.activity = activity;
         sharedPref = new SharedPref(activity);
-        openAppAdFormat = new OpenAppAdFormat(activity);
-        bannerAdFormat = new BannerAdFormat(activity);
-        interstitialAdFormat = new InterstitialAdFormat(activity);
+        if (ad_enable_banner) bannerAdFormat = new BannerAdFormat(activity);
+        if (ad_enable_interstitial) interstitialAdFormat = new InterstitialAdFormat(activity);
+        if (ad_enable_rewarded) rewardAdFormat = new RewardAdFormat(activity);
+        if (ad_enable_open_app) openAppAdFormat = new OpenAppAdFormat(activity);
         Tools.getGAID(activity);
     }
 
@@ -193,22 +198,32 @@ public class AdNetwork {
     }
 
     public void loadBannerAd(boolean enable, LinearLayout ad_container) {
-        if (!ad_enable || !enable) return;
+        if (!ad_enable || bannerAdFormat == null || !enable) return;
         bannerAdFormat.loadBannerAdMain(0, 0, ad_container);
     }
 
     public void loadInterstitialAd(boolean enable) {
-        if (!ad_enable || !enable) return;
+        if (!ad_enable || interstitialAdFormat == null || !enable) return;
         interstitialAdFormat.loadInterstitialAd(0, 0);
     }
 
     public boolean showInterstitialAd(boolean enable) {
-        if (!ad_enable || !enable) return false;
+        if (!ad_enable || interstitialAdFormat == null || !enable) return false;
         return interstitialAdFormat.showInterstitialAd();
     }
 
+    public void loadRewardedAd(boolean enable, AdRewardedListener listener) {
+        if (!ad_enable || rewardAdFormat == null || !enable) return;
+        rewardAdFormat.loadRewardAd(0, 0, listener);
+    }
+
+    public boolean showRewardedAd(boolean enable, AdRewardedListener listener) {
+        if (!ad_enable || rewardAdFormat == null || !enable) return false;
+        return rewardAdFormat.showRewardAd(listener);
+    }
+
     public void loadAndShowOpenAppAd(Activity activity, boolean enable, AdOpenListener listener) {
-        if (!ad_enable || !enable) {
+        if (!ad_enable || openAppAdFormat == null || !enable) {
             if (listener != null) listener.onFinish();
             return;
         }
@@ -216,16 +231,17 @@ public class AdNetwork {
     }
 
     public static void loadOpenAppAd(Context context, boolean enable) {
-        if (!ad_enable || !enable) return;
+        if (!ad_enable || openAppAdFormat == null || !enable) return;
         OpenAppAdFormat.loadOpenAppAd(context, 0, 0);
     }
 
     public static void showOpenAppAd(Context context, boolean enable) {
-        if (!ad_enable || !enable) return;
+        if (!ad_enable || openAppAdFormat == null || !enable) return;
         OpenAppAdFormat.showOpenAppAd(context);
     }
 
     public void destroyAndDetachBanner() {
+        if (bannerAdFormat == null) return;
         bannerAdFormat.destroyAndDetachBanner(ad_networks);
     }
 

@@ -127,7 +127,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="?android:selectableItemBackground"
-                    android:text="Inters All"
+                    android:text="Inters"
+                    android:textColor="#3C3C3C" />
+
+                <Button
+                    android:id="@+id/rewarded_all"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?android:selectableItemBackground"
+                    android:text="REWARDED"
                     android:textColor="#3C3C3C" />
 
                 <Button
@@ -135,7 +143,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="?android:selectableItemBackground"
-                    android:text="OPE APP All"
+                    android:text="OPE APP"
                     android:textColor="#3C3C3C" />
 
             </LinearLayout>

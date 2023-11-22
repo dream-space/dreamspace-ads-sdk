@@ -22,17 +22,17 @@ public class SplashActivity extends AppCompatActivity {
         AdConfig.ad_inters_interval = 2;
         AdConfig.retry_from_start_max = 2;
         AdConfig.ad_networks = new AdNetworkType[]{
-                AdNetworkType.MANAGER
+                AdNetworkType.ADMOB
         };
         adNetwork.init();
-        startActivity(new Intent(SplashActivity.this, MainActivity.class));
-//        adNetwork.loadAndShowOpenAppAd(this, true, new AdOpenListener() {
-//            @Override
-//            public void onFinish() {
-//                Log.d(TAG, "ON FINISH OPEN APP");
-//                finish();
-//                startActivity(new Intent(SplashActivity.this, MainActivity.class));
-//            }
-//        });
+        //startActivity(new Intent(SplashActivity.this, MainActivity.class));
+        adNetwork.loadAndShowOpenAppAd(this, true, new AdOpenListener() {
+            @Override
+            public void onFinish() {
+                Log.d(TAG, "ON FINISH OPEN APP");
+                finish();
+                startActivity(new Intent(SplashActivity.this, MainActivity.class));
+            }
+        });
     }
 }
