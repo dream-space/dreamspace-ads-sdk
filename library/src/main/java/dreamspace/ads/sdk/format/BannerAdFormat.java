@@ -1,17 +1,33 @@
 package dreamspace.ads.sdk.format;
 
-import static dreamspace.ads.sdk.AdConfig.*;
-import static dreamspace.ads.sdk.data.AdNetworkType.*;
+import static dreamspace.ads.sdk.AdConfig.ad_admob_banner_unit_id;
+import static dreamspace.ads.sdk.AdConfig.ad_applovin_banner_unit_id;
+import static dreamspace.ads.sdk.AdConfig.ad_applovin_banner_zone_id;
+import static dreamspace.ads.sdk.AdConfig.ad_fan_banner_unit_id;
+import static dreamspace.ads.sdk.AdConfig.ad_ironsource_app_key;
+import static dreamspace.ads.sdk.AdConfig.ad_ironsource_banner_unit_id;
+import static dreamspace.ads.sdk.AdConfig.ad_manager_banner_unit_id;
+import static dreamspace.ads.sdk.AdConfig.ad_networks;
+import static dreamspace.ads.sdk.AdConfig.ad_unity_banner_unit_id;
+import static dreamspace.ads.sdk.AdConfig.retry_from_start_max;
+import static dreamspace.ads.sdk.data.AdNetworkType.ADMOB;
+import static dreamspace.ads.sdk.data.AdNetworkType.APPLOVIN;
+import static dreamspace.ads.sdk.data.AdNetworkType.APPLOVIN_DISCOVERY;
+import static dreamspace.ads.sdk.data.AdNetworkType.APPLOVIN_MAX;
+import static dreamspace.ads.sdk.data.AdNetworkType.FAN;
+import static dreamspace.ads.sdk.data.AdNetworkType.FAN_BIDDING_ADMOB;
+import static dreamspace.ads.sdk.data.AdNetworkType.FAN_BIDDING_AD_MANAGER;
+import static dreamspace.ads.sdk.data.AdNetworkType.FAN_BIDDING_APPLOVIN_MAX;
+import static dreamspace.ads.sdk.data.AdNetworkType.FAN_BIDDING_IRONSOURCE;
+import static dreamspace.ads.sdk.data.AdNetworkType.IRONSOURCE;
+import static dreamspace.ads.sdk.data.AdNetworkType.MANAGER;
+import static dreamspace.ads.sdk.data.AdNetworkType.STARTAPP;
+import static dreamspace.ads.sdk.data.AdNetworkType.UNITY;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.util.TypedValue;
-import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -32,7 +48,6 @@ import com.facebook.ads.Ad;
 import com.facebook.ads.AdError;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.admanager.AdManagerAdView;
@@ -46,8 +61,6 @@ import com.startapp.sdk.ads.banner.Banner;
 import com.startapp.sdk.ads.banner.BannerListener;
 import com.unity3d.services.banners.BannerErrorInfo;
 import com.unity3d.services.banners.BannerView;
-import com.unity3d.services.banners.UnityBannerSize;
-import com.wortise.ads.banner.BannerAd;
 
 import java.util.List;
 
@@ -63,6 +76,7 @@ public class BannerAdFormat {
     private final Activity activity;
     private LinearLayout adContainer;
     private IronSourceBannerLayout ironSourceBannerLayout;
+
     public BannerAdFormat(Activity activity) {
         this.activity = activity;
     }
@@ -315,31 +329,6 @@ public class BannerAdFormat {
                 });
                 ad_container.addView(adView);
                 adView.loadNextAd();
-            } else if (type == WORTISE) {
-                BannerAd adView = new BannerAd(activity);
-                adView.setAdSize(Tools.getWortiseAdSize(activity));
-                adView.setAdUnitId(ad_wortise_banner_unit_id);
-                ad_container.addView(adView);
-                adView.loadAd();
-                adView.setListener(new com.wortise.ads.banner.BannerAd.Listener() {
-                    @Override
-                    public void onBannerClicked(@NonNull BannerAd bannerAd) {
-
-                    }
-
-                    @Override
-                    public void onBannerFailed(@NonNull com.wortise.ads.banner.BannerAd bannerAd, @NonNull com.wortise.ads.AdError adError) {
-                        ad_container.setVisibility(View.GONE);
-                        Log.d(TAG, type.name() + " onBannerFailed : " + adError.toString());
-                        retryLoadBanner(ad_index, retry_count, ad_container);
-                    }
-
-                    @Override
-                    public void onBannerLoaded(@NonNull com.wortise.ads.banner.BannerAd bannerAd) {
-                        ad_container.setVisibility(View.VISIBLE);
-                        Log.d(TAG, type.name() + " onBannerLoaded");
-                    }
-                });
             }
         });
 

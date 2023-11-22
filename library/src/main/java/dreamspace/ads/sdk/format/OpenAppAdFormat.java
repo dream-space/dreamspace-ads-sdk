@@ -8,7 +8,6 @@ import static dreamspace.ads.sdk.AdConfig.ad_manager_open_app_unit_id;
 import static dreamspace.ads.sdk.AdConfig.ad_networks;
 import static dreamspace.ads.sdk.AdConfig.ad_replace_unsupported_open_app_with_interstitial_on_splash;
 import static dreamspace.ads.sdk.AdConfig.ad_unity_interstitial_unit_id;
-import static dreamspace.ads.sdk.AdConfig.ad_wortise_open_app_unit_id;
 import static dreamspace.ads.sdk.AdConfig.retry_from_start_max;
 import static dreamspace.ads.sdk.data.AdNetworkType.ADMOB;
 import static dreamspace.ads.sdk.data.AdNetworkType.APPLOVIN;
@@ -23,7 +22,6 @@ import static dreamspace.ads.sdk.data.AdNetworkType.IRONSOURCE;
 import static dreamspace.ads.sdk.data.AdNetworkType.MANAGER;
 import static dreamspace.ads.sdk.data.AdNetworkType.STARTAPP;
 import static dreamspace.ads.sdk.data.AdNetworkType.UNITY;
-import static dreamspace.ads.sdk.data.AdNetworkType.WORTISE;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -93,7 +91,6 @@ public class OpenAppAdFormat {
     public static AppOpenAd ad_admob_appOpenAd = null;
     public static com.google.android.gms.ads.appopen.AppOpenAd ad_manager_appOpenAd = null;
     public static MaxAppOpenAd ad_applovin_appOpenAd = null;
-    public static com.wortise.ads.appopen.AppOpenAd ad_wortise_appOpenAd = null;
     private static ActivityListener activityListener = null;
 
     public OpenAppAdFormat(Activity activity) {
@@ -400,38 +397,6 @@ public class OpenAppAdFormat {
                 }
 
             });
-        } else if (type == WORTISE) {
-            com.wortise.ads.appopen.AppOpenAd wortiseAppOpenAd = new com.wortise.ads.appopen.AppOpenAd(activity, ad_wortise_open_app_unit_id);
-            wortiseAppOpenAd.setListener(new com.wortise.ads.appopen.AppOpenAd.Listener() {
-                @Override
-                public void onAppOpenClicked(@NonNull com.wortise.ads.appopen.AppOpenAd appOpenAd) {
-
-                }
-
-                @Override
-                public void onAppOpenDismissed(@NonNull com.wortise.ads.appopen.AppOpenAd appOpenAd) {
-                    openAppSplashFinish(listener);
-                }
-
-                @Override
-                public void onAppOpenFailed(@NonNull com.wortise.ads.appopen.AppOpenAd appOpenAd, @NonNull com.wortise.ads.AdError adError) {
-                    Log.d(TAG, type + " Open App load failed : " + adError.toString());
-                    retryLoadAndShowOpenAppAd(ad_index, retry_count, listener);
-                }
-
-                @Override
-                public void onAppOpenLoaded(@NonNull com.wortise.ads.appopen.AppOpenAd appOpenAd) {
-                    Log.d(TAG, type + " Open App loaded");
-                    loadTime = (new Date()).getTime();
-                    appOpenAd.showAd(activity);
-                }
-
-                @Override
-                public void onAppOpenShown(@NonNull com.wortise.ads.appopen.AppOpenAd appOpenAd) {
-
-                }
-            });
-            wortiseAppOpenAd.loadAd();
         } else {
             openAppSplashFinish(listener);
         }
@@ -451,7 +416,7 @@ public class OpenAppAdFormat {
         }, 500);
     }
 
-    public void openAppSplashFinish(AdOpenListener listener){
+    public void openAppSplashFinish(AdOpenListener listener) {
         if (listener != null) {
             listener.onFinish();
         }
@@ -545,40 +510,6 @@ public class OpenAppAdFormat {
             });
             ad_applovin_appOpenAd.loadAd();
 
-        } else if (type == WORTISE) {
-            com.wortise.ads.appopen.AppOpenAd wortiseAppOpenAd = new com.wortise.ads.appopen.AppOpenAd(context, ad_wortise_open_app_unit_id);
-            wortiseAppOpenAd.setListener(new com.wortise.ads.appopen.AppOpenAd.Listener() {
-                @Override
-                public void onAppOpenClicked(@NonNull com.wortise.ads.appopen.AppOpenAd appOpenAd) {
-
-                }
-
-                @Override
-                public void onAppOpenDismissed(@NonNull com.wortise.ads.appopen.AppOpenAd appOpenAd) {
-
-                }
-
-                @Override
-                public void onAppOpenFailed(@NonNull com.wortise.ads.appopen.AppOpenAd appOpenAd, @NonNull com.wortise.ads.AdError adError) {
-                    Log.d(TAG, type + " Open App load failed : " + adError.toString());
-                    isLoadingAd = false;
-                    retryLoadOpenAppAd(context, ad_index, retry_count);
-                }
-
-                @Override
-                public void onAppOpenLoaded(@NonNull com.wortise.ads.appopen.AppOpenAd appOpenAd) {
-                    Log.d(TAG, type + " Open App loaded");
-                    isLoadingAd = false;
-                    ad_wortise_appOpenAd = appOpenAd;
-                    loadTime = (new Date()).getTime();
-                }
-
-                @Override
-                public void onAppOpenShown(@NonNull com.wortise.ads.appopen.AppOpenAd appOpenAd) {
-
-                }
-            });
-            wortiseAppOpenAd.loadAd();
         } else {
             isLoadingAd = false;
         }
@@ -626,9 +557,6 @@ public class OpenAppAdFormat {
         } else if (type == APPLOVIN || type == APPLOVIN_MAX || type == FAN_BIDDING_APPLOVIN_MAX) {
             if (ad_applovin_appOpenAd == null || !ad_applovin_appOpenAd.isReady()) return;
             ad_applovin_appOpenAd.showAd();
-        } else if (type == WORTISE) {
-            if (ad_wortise_appOpenAd == null) return;
-            ad_wortise_appOpenAd.showAd(ActivityListener.currentActivity);
         }
         Log.d(TAG, type + " showOpenAppAd");
     }

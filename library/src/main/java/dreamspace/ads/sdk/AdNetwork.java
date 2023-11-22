@@ -11,7 +11,6 @@ import static dreamspace.ads.sdk.AdConfig.ad_ironsource_app_key;
 import static dreamspace.ads.sdk.AdConfig.ad_network;
 import static dreamspace.ads.sdk.AdConfig.ad_startapp_app_id;
 import static dreamspace.ads.sdk.AdConfig.ad_unity_game_id;
-import static dreamspace.ads.sdk.AdConfig.ad_wortise_app_id;
 import static dreamspace.ads.sdk.data.AdNetworkType.ADMOB;
 import static dreamspace.ads.sdk.data.AdNetworkType.APPLOVIN;
 import static dreamspace.ads.sdk.data.AdNetworkType.APPLOVIN_DISCOVERY;
@@ -25,7 +24,6 @@ import static dreamspace.ads.sdk.data.AdNetworkType.IRONSOURCE;
 import static dreamspace.ads.sdk.data.AdNetworkType.MANAGER;
 import static dreamspace.ads.sdk.data.AdNetworkType.STARTAPP;
 import static dreamspace.ads.sdk.data.AdNetworkType.UNITY;
-import static dreamspace.ads.sdk.data.AdNetworkType.WORTISE;
 
 import android.app.Activity;
 import android.content.Context;
@@ -47,7 +45,6 @@ import com.unity3d.mediation.IInitializationListener;
 import com.unity3d.mediation.InitializationConfiguration;
 import com.unity3d.mediation.UnityMediation;
 import com.unity3d.mediation.errors.SdkInitializationError;
-import com.wortise.ads.WortiseSdk;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -188,12 +185,6 @@ public class AdNetwork {
             StartAppSDK.setUserConsent(activity, "pas", System.currentTimeMillis(), true);
         }
 
-        // init startapp
-        if (Tools.contains(ad_networks, WORTISE)) {
-            Log.d(TAG, "WORTISE init");
-            WortiseSdk.initialize(activity, ad_wortise_app_id);
-        }
-
         // save to shared pref
         sharedPref.setOpenAppUnitId(ad_admob_open_app_unit_id);
     }
@@ -246,7 +237,7 @@ public class AdNetwork {
         bannerAdFormat.destroyAndDetachBanner(ad_networks);
     }
 
-    public void loadShowUMPConsentForm(){
+    public void loadShowUMPConsentForm() {
         new UMP(activity).loadShowConsentForm();
     }
 

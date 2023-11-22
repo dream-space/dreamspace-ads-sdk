@@ -8,7 +8,6 @@ import static dreamspace.ads.sdk.AdConfig.ad_ironsource_rewarded_unit_id;
 import static dreamspace.ads.sdk.AdConfig.ad_manager_rewarded_unit_id;
 import static dreamspace.ads.sdk.AdConfig.ad_networks;
 import static dreamspace.ads.sdk.AdConfig.ad_unity_rewarded_unit_id;
-import static dreamspace.ads.sdk.AdConfig.ad_wortise_rewarded_unit_id;
 import static dreamspace.ads.sdk.data.AdNetworkType.ADMOB;
 import static dreamspace.ads.sdk.data.AdNetworkType.APPLOVIN;
 import static dreamspace.ads.sdk.data.AdNetworkType.APPLOVIN_DISCOVERY;
@@ -22,7 +21,6 @@ import static dreamspace.ads.sdk.data.AdNetworkType.IRONSOURCE;
 import static dreamspace.ads.sdk.data.AdNetworkType.MANAGER;
 import static dreamspace.ads.sdk.data.AdNetworkType.STARTAPP;
 import static dreamspace.ads.sdk.data.AdNetworkType.UNITY;
-import static dreamspace.ads.sdk.data.AdNetworkType.WORTISE;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -62,7 +60,6 @@ import com.unity3d.ads.IUnityAdsLoadListener;
 import com.unity3d.ads.IUnityAdsShowListener;
 import com.unity3d.ads.UnityAds;
 import com.unity3d.ads.UnityAdsShowOptions;
-import com.wortise.ads.rewarded.models.Reward;
 
 import dreamspace.ads.sdk.AdConfig;
 import dreamspace.ads.sdk.AdNetwork;
@@ -82,7 +79,6 @@ public class RewardAdFormat {
     private MaxRewardedAd applovinMaxRewardedAd;
     public AppLovinInterstitialAdDialog appLovinInterstitialAdDialog;
     public AppLovinAd appLovinAd;
-    private com.wortise.ads.rewarded.RewardedAd wortiseRewardedAd;
 
     private static int last_reward_index = 0;
 
@@ -357,45 +353,6 @@ public class RewardAdFormat {
                     listener.onComplete();
                 }
             });
-        } else if (type == WORTISE) {
-            wortiseRewardedAd = new com.wortise.ads.rewarded.RewardedAd(activity, ad_wortise_rewarded_unit_id);
-            wortiseRewardedAd.setListener(new com.wortise.ads.rewarded.RewardedAd.Listener() {
-                @Override
-                public void onRewardedClicked(@NonNull com.wortise.ads.rewarded.RewardedAd rewardedAd) {
-
-                }
-
-                @Override
-                public void onRewardedCompleted(@NonNull com.wortise.ads.rewarded.RewardedAd rewardedAd, @NonNull Reward reward) {
-                    Log.d(TAG, type.name() + " rewarded onComplete");
-                    retryLoadReward(ad_index, retry_count, listener);
-                    listener.onComplete();
-                }
-
-                @Override
-                public void onRewardedDismissed(@NonNull com.wortise.ads.rewarded.RewardedAd rewardedAd) {
-                    Log.d(TAG, type.name() + " rewarded onComplete");
-                    retryLoadReward(ad_index, retry_count, listener);
-                    listener.onDismissed();
-                }
-
-                @Override
-                public void onRewardedFailed(@NonNull com.wortise.ads.rewarded.RewardedAd rewardedAd, @NonNull com.wortise.ads.AdError adError) {
-                    Log.d(TAG, type.name() + " rewarded onRewardedFailed : " + adError);
-                    retryLoadReward(ad_index, retry_count, listener);
-                }
-
-                @Override
-                public void onRewardedLoaded(@NonNull com.wortise.ads.rewarded.RewardedAd rewardedAd) {
-                    Log.d(TAG, type.name() + " rewarded onAdLoaded");
-                }
-
-                @Override
-                public void onRewardedShown(@NonNull com.wortise.ads.rewarded.RewardedAd rewardedAd) {
-
-                }
-            });
-            wortiseRewardedAd.loadAd();
         }
     }
 
@@ -470,12 +427,6 @@ public class RewardAdFormat {
         } else if (type == APPLOVIN_DISCOVERY) {
             if (appLovinInterstitialAdDialog != null) {
                 appLovinInterstitialAdDialog.showAndRender(appLovinAd);
-            } else {
-                listener.onError();
-            }
-        } else if (type == WORTISE) {
-            if (wortiseRewardedAd != null && wortiseRewardedAd.isAvailable()) {
-                wortiseRewardedAd.showAd();
             } else {
                 listener.onError();
             }

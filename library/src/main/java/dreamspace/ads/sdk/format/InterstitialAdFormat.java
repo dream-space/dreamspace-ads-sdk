@@ -1,7 +1,23 @@
 package dreamspace.ads.sdk.format;
 
-import static dreamspace.ads.sdk.AdConfig.*;
-import static dreamspace.ads.sdk.data.AdNetworkType.*;
+import static dreamspace.ads.sdk.AdConfig.ad_applovin_interstitial_unit_id;
+import static dreamspace.ads.sdk.AdConfig.ad_applovin_interstitial_zone_id;
+import static dreamspace.ads.sdk.AdConfig.ad_manager_interstitial_unit_id;
+import static dreamspace.ads.sdk.AdConfig.ad_networks;
+import static dreamspace.ads.sdk.AdConfig.ad_unity_interstitial_unit_id;
+import static dreamspace.ads.sdk.data.AdNetworkType.ADMOB;
+import static dreamspace.ads.sdk.data.AdNetworkType.APPLOVIN;
+import static dreamspace.ads.sdk.data.AdNetworkType.APPLOVIN_DISCOVERY;
+import static dreamspace.ads.sdk.data.AdNetworkType.APPLOVIN_MAX;
+import static dreamspace.ads.sdk.data.AdNetworkType.FAN;
+import static dreamspace.ads.sdk.data.AdNetworkType.FAN_BIDDING_ADMOB;
+import static dreamspace.ads.sdk.data.AdNetworkType.FAN_BIDDING_AD_MANAGER;
+import static dreamspace.ads.sdk.data.AdNetworkType.FAN_BIDDING_APPLOVIN_MAX;
+import static dreamspace.ads.sdk.data.AdNetworkType.FAN_BIDDING_IRONSOURCE;
+import static dreamspace.ads.sdk.data.AdNetworkType.IRONSOURCE;
+import static dreamspace.ads.sdk.data.AdNetworkType.MANAGER;
+import static dreamspace.ads.sdk.data.AdNetworkType.STARTAPP;
+import static dreamspace.ads.sdk.data.AdNetworkType.UNITY;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -65,7 +81,6 @@ public class InterstitialAdFormat {
     private MaxInterstitialAd maxInterstitialAd;
     public AppLovinInterstitialAdDialog appLovinInterstitialAdDialog;
     public AppLovinAd appLovinAd;
-    public com.wortise.ads.interstitial.InterstitialAd wortiseInterstitialAd;
 
     private static int last_interstitial_index = 0;
 
@@ -320,37 +335,6 @@ public class InterstitialAdFormat {
 
             });
             appLovinInterstitialAdDialog = AppLovinInterstitialAd.create(AppLovinSdk.getInstance(activity), activity);
-        } else if (type == WORTISE) {
-            wortiseInterstitialAd = new com.wortise.ads.interstitial.InterstitialAd(activity, ad_wortise_interstitial_unit_id);
-            wortiseInterstitialAd.setListener(new com.wortise.ads.interstitial.InterstitialAd.Listener() {
-                @Override
-                public void onInterstitialClicked(@NonNull com.wortise.ads.interstitial.InterstitialAd interstitialAd) {
-
-                }
-
-                @Override
-                public void onInterstitialDismissed(@NonNull com.wortise.ads.interstitial.InterstitialAd interstitialAd) {
-                    sharedPref.setIntersCounter(0);
-                }
-
-                @Override
-                public void onInterstitialFailed(@NonNull com.wortise.ads.interstitial.InterstitialAd interstitialAd, @NonNull com.wortise.ads.AdError adError) {
-                    retryLoadInterstitial(ad_index, retry_count);
-                    Log.d(TAG, type.name() + " interstitial onInterstitialFailed");
-                }
-
-                @Override
-                public void onInterstitialLoaded(@NonNull com.wortise.ads.interstitial.InterstitialAd interstitialAd) {
-                    Log.d(TAG, type.name() + " interstitial onInterstitialLoaded");
-                    wortiseInterstitialAd = interstitialAd;
-                }
-
-                @Override
-                public void onInterstitialShown(@NonNull com.wortise.ads.interstitial.InterstitialAd interstitialAd) {
-
-                }
-            });
-            wortiseInterstitialAd.loadAd();
         }
     }
 
@@ -438,12 +422,6 @@ public class InterstitialAdFormat {
             }
             sharedPref.setIntersCounter(0);
             appLovinInterstitialAdDialog.showAndRender(appLovinAd);
-        } else if (type == WORTISE) {
-            if (wortiseInterstitialAd == null || !wortiseInterstitialAd.isAvailable()) {
-                loadInterstitialAd(0, 0);
-                return false;
-            }
-            wortiseInterstitialAd.showAd();
         }
         return true;
     }

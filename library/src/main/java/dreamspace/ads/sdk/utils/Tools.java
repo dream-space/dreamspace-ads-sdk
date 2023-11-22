@@ -40,16 +40,6 @@ public class Tools {
         return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(activity, adWidth);
     }
 
-    public static com.wortise.ads.AdSize getWortiseAdSize(Activity activity) {
-        Display display = activity.getWindowManager().getDefaultDisplay();
-        DisplayMetrics outMetrics = new DisplayMetrics();
-        display.getMetrics(outMetrics);
-        float widthPixels = outMetrics.widthPixels;
-        float density = outMetrics.density;
-        int adWidth = (int) (widthPixels / density);
-        return com.wortise.ads.AdSize.getAnchoredAdaptiveBannerAdSize(activity, adWidth);
-    }
-
     public static AdSize getAdSizeMREC() {
         return AdSize.MEDIUM_RECTANGLE;
     }
