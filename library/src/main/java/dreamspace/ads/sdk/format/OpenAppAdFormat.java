@@ -86,6 +86,7 @@ public class OpenAppAdFormat {
     private static boolean isLoadingAd = false;
     public static boolean isShowingAd = false;
     private static long loadTime = 0;
+    private static long lastShowTime = 0;
 
     public static int last_open_app_index = -1;
     public static AppOpenAd ad_admob_appOpenAd = null;
@@ -416,7 +417,8 @@ public class OpenAppAdFormat {
         }, 500);
     }
 
-    public void openAppSplashFinish(AdOpenListener listener) {
+    public void openAppSplashFinish(AdOpenListener listener){
+        lastShowTime = (new Date()).getTime();
         if (listener != null) {
             listener.onFinish();
         }
@@ -541,13 +543,18 @@ public class OpenAppAdFormat {
             return;
         }
 
+        if (!wasShowTimeMoreNSecondAgo(10)) {
+            Log.d(TAG, "showOpenAppAd : wasShowTimeMoreNMinuteAgo");
+            return;
+        }
+
         if (activityListener == null || ActivityListener.currentActivity == null) {
             Log.d(TAG, "showOpenAppAd : activityListener null");
             return;
         }
 
         AdNetworkType type = ad_networks[last_open_app_index];
-
+        lastShowTime = (new Date()).getTime();
         if (type == ADMOB || type == FAN_BIDDING_ADMOB) {
             if (ad_admob_appOpenAd == null) return;
             ad_admob_appOpenAd.show(ActivityListener.currentActivity);
@@ -566,5 +573,12 @@ public class OpenAppAdFormat {
         long dateDifference = (new Date()).getTime() - loadTime;
         long numMilliSecondsPerHour = 3600000;
         return (dateDifference < (numMilliSecondsPerHour * numHours));
+    }
+
+    // check if ad was loaded more than n minute ago.
+    private static boolean wasShowTimeMoreNSecondAgo(long second) {
+        long difference = (new Date()).getTime() - lastShowTime;
+        long numMilliSecondsPerSecond = 1000;
+        return (difference > (numMilliSecondsPerSecond * second));
     }
 }
