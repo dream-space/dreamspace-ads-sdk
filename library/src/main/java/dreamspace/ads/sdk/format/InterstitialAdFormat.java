@@ -14,9 +14,6 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.facebook.ads.Ad;
-import com.facebook.ads.AdError;
-import com.facebook.ads.InterstitialAdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.LoadAdError;
@@ -39,7 +36,6 @@ public class InterstitialAdFormat {
     //Interstitial
     private com.google.android.gms.ads.interstitial.InterstitialAd adMobInterstitialAd;
     private AdManagerInterstitialAd adManagerInterstitialAd;
-    private com.facebook.ads.InterstitialAd fanInterstitialAd;
 
     private static int last_interstitial_index = 0;
 
@@ -122,44 +118,6 @@ public class InterstitialAdFormat {
                 }
             });
 
-        } else if (type == FAN) {
-            fanInterstitialAd = new com.facebook.ads.InterstitialAd(activity, AdConfig.ad_fan_interstitial_unit_id);
-            InterstitialAdListener interstitialAdListener = new InterstitialAdListener() {
-                @Override
-                public void onInterstitialDisplayed(Ad ad) {
-
-                }
-
-                @Override
-                public void onInterstitialDismissed(Ad ad) {
-                    sharedPref.setIntersCounter(0);
-                    loadInterstitialAd(0, 0);
-                }
-
-                @Override
-                public void onError(Ad ad, AdError adError) {
-                    adMobInterstitialAd = null;
-                    Log.d(TAG, type.name() + " interstitial onError");
-                    retryLoadInterstitial(ad_index, retry_count);
-                }
-
-                @Override
-                public void onAdLoaded(Ad ad) {
-                    Log.d(TAG, "FAN interstitial onAdLoaded");
-                }
-
-                @Override
-                public void onAdClicked(Ad ad) {
-                }
-
-                @Override
-                public void onLoggingImpression(Ad ad) {
-                }
-            };
-
-            // load ads
-            fanInterstitialAd.loadAd(fanInterstitialAd.buildLoadAdConfig().withAdListener(interstitialAdListener).build());
-
         }
     }
 
@@ -189,12 +147,6 @@ public class InterstitialAdFormat {
                 return false;
             }
             adManagerInterstitialAd.show(activity);
-        } else if (type == FAN) {
-            if (fanInterstitialAd == null || !fanInterstitialAd.isAdLoaded()) {
-                loadInterstitialAd(0, 0);
-                return false;
-            }
-            fanInterstitialAd.show();
         }
         return true;
     }

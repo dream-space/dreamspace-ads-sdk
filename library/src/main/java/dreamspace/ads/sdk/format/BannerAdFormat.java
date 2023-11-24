@@ -21,8 +21,6 @@ import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 
-import com.facebook.ads.Ad;
-import com.facebook.ads.AdError;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.LoadAdError;
@@ -94,37 +92,6 @@ public class BannerAdFormat {
                         ad_container.setVisibility(View.VISIBLE);
                     }
                 });
-            } else if (type == FAN) {
-                com.facebook.ads.AdView adView = new com.facebook.ads.AdView(activity, ad_fan_banner_unit_id, com.facebook.ads.AdSize.BANNER_HEIGHT_50);
-                // Add the ad view to your activity layout
-                ad_container.addView(adView);
-                com.facebook.ads.AdListener adListener = new com.facebook.ads.AdListener() {
-                    @Override
-                    public void onError(Ad ad, AdError adError) {
-                        ad_container.setVisibility(View.GONE);
-                        Log.d(TAG, type.name() + " banner onAdFailedToLoad : " + adError.getErrorMessage());
-                        retryLoadBanner(ad_index, retry_count, ad_container);
-                    }
-
-                    @Override
-                    public void onAdLoaded(Ad ad) {
-                        ad_container.setVisibility(View.VISIBLE);
-                        Log.d(TAG, type.name() + " banner onAdLoaded");
-                    }
-
-                    @Override
-                    public void onAdClicked(Ad ad) {
-
-                    }
-
-                    @Override
-                    public void onLoggingImpression(Ad ad) {
-
-                    }
-                };
-                com.facebook.ads.AdView.AdViewLoadConfig loadAdConfig = adView.buildLoadAdConfig().withAdListener(adListener).build();
-                adView.loadAd(loadAdConfig);
-
             }
         });
 

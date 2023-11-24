@@ -1,6 +1,5 @@
 package dreamspace.ads.sdk;
 
-import static com.facebook.ads.AdSettings.IntegrationErrorMode.INTEGRATION_ERROR_CALLBACK_MODE;
 import static dreamspace.ads.sdk.AdConfig.ad_admob_open_app_unit_id;
 import static dreamspace.ads.sdk.AdConfig.ad_enable;
 import static dreamspace.ads.sdk.AdConfig.ad_enable_banner;
@@ -9,7 +8,6 @@ import static dreamspace.ads.sdk.AdConfig.ad_enable_open_app;
 import static dreamspace.ads.sdk.AdConfig.ad_enable_rewarded;
 import static dreamspace.ads.sdk.AdConfig.ad_network;
 import static dreamspace.ads.sdk.data.AdNetworkType.ADMOB;
-import static dreamspace.ads.sdk.data.AdNetworkType.FAN;
 import static dreamspace.ads.sdk.data.AdNetworkType.FAN_BIDDING_ADMOB;
 import static dreamspace.ads.sdk.data.AdNetworkType.FAN_BIDDING_AD_MANAGER;
 import static dreamspace.ads.sdk.data.AdNetworkType.MANAGER;
@@ -19,8 +17,6 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.LinearLayout;
 
-import com.facebook.ads.AdSettings;
-import com.facebook.ads.AudienceNetworkAds;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.initialization.AdapterStatus;
 
@@ -36,7 +32,6 @@ import dreamspace.ads.sdk.format.InterstitialAdFormat;
 import dreamspace.ads.sdk.format.OpenAppAdFormat;
 import dreamspace.ads.sdk.format.RewardAdFormat;
 import dreamspace.ads.sdk.gdpr.UMP;
-import dreamspace.ads.sdk.helper.AudienceNetworkInitializeHelper;
 import dreamspace.ads.sdk.listener.AdOpenListener;
 import dreamspace.ads.sdk.listener.AdRewardedListener;
 import dreamspace.ads.sdk.utils.Tools;
@@ -88,14 +83,6 @@ public class AdNetwork {
                     Log.d(TAG, String.format("Adapter name: %s, Description: %s, Latency: %d", adapterClass, adapterStatus.getDescription(), adapterStatus.getLatency()));
                 }
             });
-            AudienceNetworkInitializeHelper.initializeAd(activity, BuildConfig.DEBUG);
-        }
-
-        // init fan
-        if (Tools.contains(ad_networks, FAN)) {
-            Log.d(TAG, "FAN init");
-            AudienceNetworkAds.initialize(this.activity);
-            AdSettings.setIntegrationErrorMode(INTEGRATION_ERROR_CALLBACK_MODE);
         }
 
         // save to shared pref

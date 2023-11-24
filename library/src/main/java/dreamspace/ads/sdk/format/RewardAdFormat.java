@@ -1,7 +1,6 @@
 package dreamspace.ads.sdk.format;
 
 import static dreamspace.ads.sdk.AdConfig.ad_admob_rewarded_unit_id;
-import static dreamspace.ads.sdk.AdConfig.ad_fan_rewarded_unit_id;
 import static dreamspace.ads.sdk.AdConfig.ad_manager_rewarded_unit_id;
 import static dreamspace.ads.sdk.AdConfig.ad_networks;
 import static dreamspace.ads.sdk.data.AdNetworkType.ADMOB;
@@ -16,9 +15,6 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.facebook.ads.Ad;
-import com.facebook.ads.AdError;
-import com.facebook.ads.RewardedVideoAdListener;
 import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
@@ -35,7 +31,6 @@ public class RewardAdFormat {
 
     private com.google.android.gms.ads.rewarded.RewardedAd adMobRewardedAd;
     private com.google.android.gms.ads.rewarded.RewardedAd adManagerRewardedAd;
-    private com.facebook.ads.RewardedVideoAd fanRewardedVideoAd;
 
     private static int last_reward_index = 0;
 
@@ -113,43 +108,6 @@ public class RewardAdFormat {
                     retryLoadReward(ad_index, retry_count, listener);
                 }
             });
-        } else if (type == FAN) {
-            fanRewardedVideoAd = new com.facebook.ads.RewardedVideoAd(activity, ad_fan_rewarded_unit_id);
-            fanRewardedVideoAd.loadAd(fanRewardedVideoAd.buildLoadAdConfig().withAdListener(new RewardedVideoAdListener() {
-                @Override
-                public void onRewardedVideoCompleted() {
-                    Log.d(TAG, type.name() + " rewarded onComplete");
-                    listener.onComplete();
-                }
-
-                @Override
-                public void onRewardedVideoClosed() {
-                    Log.d(TAG, type.name() + " rewarded onRewardedVideoClosed");
-                    retryLoadReward(ad_index, retry_count, listener);
-                    listener.onDismissed();
-                }
-
-                @Override
-                public void onError(Ad ad, AdError adError) {
-                    Log.d(TAG, type.name() + " rewarded onError : " + adError.getErrorMessage());
-                    retryLoadReward(ad_index, retry_count, listener);
-                }
-
-                @Override
-                public void onAdLoaded(Ad ad) {
-                    Log.d(TAG, type.name() + " rewarded onAdLoaded");
-                }
-
-                @Override
-                public void onAdClicked(Ad ad) {
-
-                }
-
-                @Override
-                public void onLoggingImpression(Ad ad) {
-
-                }
-            }).build());
         } else {
             listener.onComplete();
         }
@@ -173,12 +131,6 @@ public class RewardAdFormat {
                     listener.onComplete();
                     Log.d(TAG, type + " The user earned the reward.");
                 });
-            } else {
-                listener.onError();
-            }
-        } else if (type == FAN) {
-            if (fanRewardedVideoAd != null && fanRewardedVideoAd.isAdLoaded()) {
-                fanRewardedVideoAd.show();
             } else {
                 listener.onError();
             }
