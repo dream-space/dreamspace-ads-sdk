@@ -50,9 +50,14 @@ dependencies {
     //Ad Networks
     implementation 'com.google.android.gms:play-services-ads:22.5.0'
     implementation 'com.facebook.android:audience-network-sdk:6.16.0'
+    implementation 'com.ironsource.sdk:mediationsdk:7.5.1'
 
     //AdMob mediation
     implementation 'com.google.ads.mediation:facebook:6.16.0.0'
+
+    //ironSource mediation
+    implementation 'com.ironsource.adapters:admobadapter:4.3.39'
+    implementation 'com.ironsource.adapters:facebookadapter:4.3.45'
 
     //GDPR
     implementation 'com.google.android.ump:user-messaging-platform:2.1.0'
@@ -76,7 +81,7 @@ afterEvaluate {
                 from components.release
                 groupId = "dream-space"
                 artifactId = "dreamspace.ads.sdk"
-                version = "3.0.1-simple"
+                version = "3.0.1-custom"
             }
         }
     }

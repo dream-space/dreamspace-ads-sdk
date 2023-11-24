@@ -41,7 +41,7 @@ public class AdConfig implements Serializable {
     public static String ad_fan_interstitial_unit_id = "YOUR_PLACEMENT_ID";
     public static String ad_fan_rewarded_unit_id = "YOUR_PLACEMENT_ID";
 
-    public static String ad_ironsource_app_key = "170112cfd";
+    public static String ad_ironsource_app_key = "1a12ca71d";
     public static String ad_ironsource_banner_unit_id = "DefaultBanner";
     public static String ad_ironsource_rewarded_unit_id = "DefaultRewardedVideo";
     public static String ad_ironsource_interstitial_unit_id = "DefaultInterstitial";

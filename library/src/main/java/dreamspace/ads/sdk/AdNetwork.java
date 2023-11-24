@@ -7,12 +7,15 @@ import static dreamspace.ads.sdk.AdConfig.ad_enable_banner;
 import static dreamspace.ads.sdk.AdConfig.ad_enable_interstitial;
 import static dreamspace.ads.sdk.AdConfig.ad_enable_open_app;
 import static dreamspace.ads.sdk.AdConfig.ad_enable_rewarded;
+import static dreamspace.ads.sdk.AdConfig.ad_ironsource_app_key;
 import static dreamspace.ads.sdk.AdConfig.ad_network;
 import static dreamspace.ads.sdk.data.AdNetworkType.ADMOB;
 import static dreamspace.ads.sdk.data.AdNetworkType.FAN;
 import static dreamspace.ads.sdk.data.AdNetworkType.FAN_BIDDING_ADMOB;
 import static dreamspace.ads.sdk.data.AdNetworkType.FAN_BIDDING_AD_MANAGER;
+import static dreamspace.ads.sdk.data.AdNetworkType.FAN_BIDDING_IRONSOURCE;
 import static dreamspace.ads.sdk.data.AdNetworkType.MANAGER;
+import static dreamspace.ads.sdk.data.AdNetworkType.IRONSOURCE;
 
 import android.app.Activity;
 import android.content.Context;
@@ -23,6 +26,7 @@ import com.facebook.ads.AdSettings;
 import com.facebook.ads.AudienceNetworkAds;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.initialization.AdapterStatus;
+import com.ironsource.mediationsdk.IronSource;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -98,6 +102,16 @@ public class AdNetwork {
             AdSettings.setIntegrationErrorMode(INTEGRATION_ERROR_CALLBACK_MODE);
         }
 
+        // init iron source
+        if (Tools.contains(ad_networks, IRONSOURCE, FAN_BIDDING_IRONSOURCE)) {
+            Log.d(TAG, "IRONSOURCE init");
+            String advertisingId = IronSource.getAdvertiserId(activity);
+            IronSource.setUserId(advertisingId);
+            IronSource.init(activity, ad_ironsource_app_key, () -> {
+                Log.d(TAG, "IRONSOURCE onInitializationComplete");
+            });
+        }
+
         // save to shared pref
         sharedPref.setOpenAppUnitId(ad_admob_open_app_unit_id);
     }
@@ -150,7 +164,7 @@ public class AdNetwork {
         bannerAdFormat.destroyAndDetachBanner(ad_networks);
     }
 
-    public void loadShowUMPConsentForm() {
+    public void loadShowUMPConsentForm(){
         new UMP(activity).loadShowConsentForm();
     }
 

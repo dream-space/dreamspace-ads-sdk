@@ -1,22 +1,13 @@
 package dreamspace.ads.sdk.format;
 
-import static dreamspace.ads.sdk.AdConfig.ad_admob_banner_unit_id;
-import static dreamspace.ads.sdk.AdConfig.ad_fan_banner_unit_id;
-import static dreamspace.ads.sdk.AdConfig.ad_manager_banner_unit_id;
-import static dreamspace.ads.sdk.AdConfig.ad_networks;
-import static dreamspace.ads.sdk.AdConfig.retry_from_start_max;
-import static dreamspace.ads.sdk.data.AdNetworkType.ADMOB;
-import static dreamspace.ads.sdk.data.AdNetworkType.FAN;
-import static dreamspace.ads.sdk.data.AdNetworkType.FAN_BIDDING_ADMOB;
-import static dreamspace.ads.sdk.data.AdNetworkType.FAN_BIDDING_AD_MANAGER;
-import static dreamspace.ads.sdk.data.AdNetworkType.FAN_BIDDING_IRONSOURCE;
-import static dreamspace.ads.sdk.data.AdNetworkType.IRONSOURCE;
-import static dreamspace.ads.sdk.data.AdNetworkType.MANAGER;
+import static dreamspace.ads.sdk.AdConfig.*;
+import static dreamspace.ads.sdk.data.AdNetworkType.*;
 
 import android.app.Activity;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
@@ -27,6 +18,12 @@ import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.admanager.AdManagerAdView;
+import com.ironsource.mediationsdk.ISBannerSize;
+import com.ironsource.mediationsdk.IronSource;
+import com.ironsource.mediationsdk.IronSourceBannerLayout;
+import com.ironsource.mediationsdk.adunit.adapter.utility.AdInfo;
+import com.ironsource.mediationsdk.logger.IronSourceError;
+import com.ironsource.mediationsdk.sdk.LevelPlayBannerListener;
 
 import java.util.List;
 
@@ -40,7 +37,7 @@ public class BannerAdFormat {
 
     private final Activity activity;
     private LinearLayout adContainer;
-
+    private IronSourceBannerLayout ironSourceBannerLayout;
     public BannerAdFormat(Activity activity) {
         this.activity = activity;
     }
@@ -125,6 +122,49 @@ public class BannerAdFormat {
                 com.facebook.ads.AdView.AdViewLoadConfig loadAdConfig = adView.buildLoadAdConfig().withAdListener(adListener).build();
                 adView.loadAd(loadAdConfig);
 
+            } else if (type == IRONSOURCE || type == FAN_BIDDING_IRONSOURCE) {
+                IronSource.init(activity, ad_ironsource_app_key, IronSource.AD_UNIT.BANNER, IronSource.AD_UNIT.INTERSTITIAL);
+
+                ISBannerSize bannerSize = ISBannerSize.BANNER;
+                bannerSize.setAdaptive(true);
+                ironSourceBannerLayout = IronSource.createBanner(activity, bannerSize);
+                FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+                ad_container.addView(ironSourceBannerLayout, 0, layoutParams);
+                ironSourceBannerLayout.setLevelPlayBannerListener(new LevelPlayBannerListener() {
+                    @Override
+                    public void onAdLoaded(AdInfo adInfo) {
+                        ad_container.setVisibility(View.VISIBLE);
+                        Log.d(TAG, type.name() + " banner onBannerAdLoaded");
+                    }
+
+                    @Override
+                    public void onAdLoadFailed(IronSourceError ironSourceError) {
+                        ad_container.setVisibility(View.GONE);
+                        Log.d(TAG, type.name() + " banner onBannerAdLoadFailed : " + ironSourceError.getErrorMessage());
+                        retryLoadBanner(ad_index, retry_count, ad_container);
+                    }
+
+                    @Override
+                    public void onAdClicked(AdInfo adInfo) {
+
+                    }
+
+                    @Override
+                    public void onAdLeftApplication(AdInfo adInfo) {
+
+                    }
+
+                    @Override
+                    public void onAdScreenPresented(AdInfo adInfo) {
+
+                    }
+
+                    @Override
+                    public void onAdScreenDismissed(AdInfo adInfo) {
+
+                    }
+                });
+                IronSource.loadBanner(ironSourceBannerLayout, ad_ironsource_banner_unit_id);
             }
         });
 
@@ -147,7 +187,15 @@ public class BannerAdFormat {
 
 
     public void destroyAndDetachBanner(List<AdNetworkType> adNetworks) {
-
+        if (Tools.contains(adNetworks, IRONSOURCE, FAN_BIDDING_IRONSOURCE)) {
+            if (ironSourceBannerLayout != null) {
+                Log.d(TAG, "ironSource banner is not null, ready to destroy");
+                IronSource.destroyBanner(ironSourceBannerLayout);
+                adContainer.removeView(ironSourceBannerLayout);
+            } else {
+                Log.d(TAG, "ironSource banner is null");
+            }
+        }
     }
 
 }
