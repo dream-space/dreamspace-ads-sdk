@@ -22,7 +22,7 @@ public class SplashActivity extends AppCompatActivity {
         AdConfig.ad_inters_interval = 2;
         AdConfig.retry_from_start_max = 2;
         AdConfig.ad_networks = new AdNetworkType[]{
-                AdNetworkType.ADMOB
+                AdNetworkType.MANAGER
         };
         adNetwork.init();
         //startActivity(new Intent(SplashActivity.this, MainActivity.class));
