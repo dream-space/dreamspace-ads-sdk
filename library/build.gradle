@@ -76,7 +76,7 @@ afterEvaluate {
                 from components.release
                 groupId = "dream-space"
                 artifactId = "dreamspace.ads.sdk"
-                version = "3.0-simple"
+                version = "3.0.1-simple"
             }
         }
     }
