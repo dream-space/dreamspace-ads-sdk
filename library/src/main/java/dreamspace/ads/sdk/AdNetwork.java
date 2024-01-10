@@ -100,6 +100,10 @@ public class AdNetwork {
             Log.d(TAG, "FAN init");
             AudienceNetworkAds.initialize(this.activity);
             AdSettings.setIntegrationErrorMode(INTEGRATION_ERROR_CALLBACK_MODE);
+            if (BuildConfig.DEBUG) {
+                AdSettings.turnOnSDKDebugger(this.activity);
+                AdSettings.setTestMode(true);
+            }
         }
 
         // init iron source
