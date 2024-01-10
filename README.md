@@ -2,7 +2,7 @@
 
 [![](https://jitpack.io/v/dream-space/dreamspace-ads-sdk.svg)](https://jitpack.io/#dream-space/dreamspace-ads-sdk)
 
-
+<code>
 git checkout main
 git tag 3.0.1-all
 git push origin 3.0.1-all
@@ -30,3 +30,4 @@ git push origin 3.0.1-triple
 git checkout simple
 git tag 3.0.1-simple
 git push origin 3.0.1-simple
+</code>
