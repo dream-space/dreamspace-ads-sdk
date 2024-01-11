@@ -92,7 +92,7 @@ public class AdNetwork {
                     Log.d(TAG, String.format("Adapter name: %s, Description: %s, Latency: %d", adapterClass, adapterStatus.getDescription(), adapterStatus.getLatency()));
                 }
             });
-            AudienceNetworkInitializeHelper.initializeAd(activity, BuildConfig.DEBUG);
+            AudienceNetworkInitializeHelper.initializeAd(activity, AdConfig.debug_mode);
         }
 
         // init fan
@@ -100,7 +100,7 @@ public class AdNetwork {
             Log.d(TAG, "FAN init");
             AudienceNetworkAds.initialize(this.activity);
             AdSettings.setIntegrationErrorMode(INTEGRATION_ERROR_CALLBACK_MODE);
-            if (BuildConfig.DEBUG) {
+            if (AdConfig.debug_mode) {
                 AdSettings.turnOnSDKDebugger(this.activity);
                 AdSettings.setTestMode(true);
             }
