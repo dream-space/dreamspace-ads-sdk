@@ -1,0 +1,5 @@
+git checkout admob-only
+git tag -a test-admob -m "Tagging"
+
+# Push the tag to GitHub
+git push origin <tag_name>
