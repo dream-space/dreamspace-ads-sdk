@@ -4,15 +4,9 @@ import static dreamspace.ads.sdk.AdConfig.ad_applovin_interstitial_unit_id;
 import static dreamspace.ads.sdk.AdConfig.ad_applovin_interstitial_zone_id;
 import static dreamspace.ads.sdk.AdConfig.ad_manager_interstitial_unit_id;
 import static dreamspace.ads.sdk.AdConfig.ad_networks;
-import static dreamspace.ads.sdk.data.AdNetworkType.ADMOB;
 import static dreamspace.ads.sdk.data.AdNetworkType.APPLOVIN;
 import static dreamspace.ads.sdk.data.AdNetworkType.APPLOVIN_DISCOVERY;
 import static dreamspace.ads.sdk.data.AdNetworkType.APPLOVIN_MAX;
-import static dreamspace.ads.sdk.data.AdNetworkType.FAN;
-import static dreamspace.ads.sdk.data.AdNetworkType.FAN_BIDDING_ADMOB;
-import static dreamspace.ads.sdk.data.AdNetworkType.FAN_BIDDING_AD_MANAGER;
-import static dreamspace.ads.sdk.data.AdNetworkType.FAN_BIDDING_APPLOVIN_MAX;
-import static dreamspace.ads.sdk.data.AdNetworkType.MANAGER;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -82,108 +76,7 @@ public class InterstitialAdFormat {
         if (retry_count > AdConfig.retry_from_start_max) return;
         last_interstitial_index = ad_index;
         AdNetworkType type = ad_networks[ad_index];
-        if (type == ADMOB || type == FAN_BIDDING_ADMOB) {
-            InterstitialAd.load(activity, AdConfig.ad_admob_interstitial_unit_id, new AdRequest.Builder().build(), new InterstitialAdLoadCallback() {
-                @Override
-                public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
-                    adMobInterstitialAd = interstitialAd;
-                    Log.d(TAG, type.name() + " interstitial onAdLoaded");
-
-                    adMobInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
-                        @Override
-                        public void onAdShowedFullScreenContent() {
-                            super.onAdShowedFullScreenContent();
-                            sharedPref.setIntersCounter(0);
-                            loadInterstitialAd(0, 0);
-                        }
-
-                        @Override
-                        public void onAdDismissedFullScreenContent() {
-                            super.onAdDismissedFullScreenContent();
-                            adMobInterstitialAd = null;
-                        }
-                    });
-                }
-
-                @Override
-                public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
-                    adMobInterstitialAd = null;
-                    Log.d(TAG, type.name() + " interstitial onAdFailedToLoad");
-                    retryLoadInterstitial(ad_index, retry_count);
-                }
-            });
-        } else if (type == MANAGER || type == FAN_BIDDING_AD_MANAGER) {
-            AdManagerInterstitialAd.load(activity, ad_manager_interstitial_unit_id, Tools.getGoogleAdManagerRequest(), new AdManagerInterstitialAdLoadCallback() {
-                @Override
-                public void onAdLoaded(@NonNull AdManagerInterstitialAd interstitialAd) {
-                    super.onAdLoaded(adManagerInterstitialAd);
-                    adManagerInterstitialAd = interstitialAd;
-                    Log.d(TAG, type.name() + " interstitial onAdLoaded");
-
-                    adManagerInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
-                        @Override
-                        public void onAdShowedFullScreenContent() {
-                            super.onAdShowedFullScreenContent();
-                            sharedPref.setIntersCounter(0);
-                            loadInterstitialAd(0, 0);
-                        }
-
-                        @Override
-                        public void onAdDismissedFullScreenContent() {
-                            super.onAdDismissedFullScreenContent();
-                            adManagerInterstitialAd = null;
-                        }
-                    });
-                }
-
-                @Override
-                public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
-                    super.onAdFailedToLoad(loadAdError);
-                    adManagerInterstitialAd = null;
-                    Log.d(TAG, type.name() + " interstitial onAdFailedToLoad");
-                    retryLoadInterstitial(ad_index, retry_count);
-                }
-            });
-
-        } else if (type == FAN) {
-            fanInterstitialAd = new com.facebook.ads.InterstitialAd(activity, AdConfig.ad_fan_interstitial_unit_id);
-            InterstitialAdListener interstitialAdListener = new InterstitialAdListener() {
-                @Override
-                public void onInterstitialDisplayed(Ad ad) {
-
-                }
-
-                @Override
-                public void onInterstitialDismissed(Ad ad) {
-                    sharedPref.setIntersCounter(0);
-                    loadInterstitialAd(0, 0);
-                }
-
-                @Override
-                public void onError(Ad ad, AdError adError) {
-                    adMobInterstitialAd = null;
-                    Log.d(TAG, type.name() + " interstitial onError");
-                    retryLoadInterstitial(ad_index, retry_count);
-                }
-
-                @Override
-                public void onAdLoaded(Ad ad) {
-                    Log.d(TAG, "FAN interstitial onAdLoaded");
-                }
-
-                @Override
-                public void onAdClicked(Ad ad) {
-                }
-
-                @Override
-                public void onLoggingImpression(Ad ad) {
-                }
-            };
-
-            // load ads
-            fanInterstitialAd.loadAd(fanInterstitialAd.buildLoadAdConfig().withAdListener(interstitialAdListener).build());
-
-        } else if (type == APPLOVIN || type == APPLOVIN_MAX || type == FAN_BIDDING_APPLOVIN_MAX) {
+        if (type == APPLOVIN || type == APPLOVIN_MAX) {
             maxInterstitialAd = new MaxInterstitialAd(ad_applovin_interstitial_unit_id, activity);
             maxInterstitialAd.setListener(new MaxAdListener() {
                 @Override
@@ -260,26 +153,7 @@ public class InterstitialAdFormat {
         Log.d(TAG, "COUNTER reach attempt");
         int ad_index = last_interstitial_index;
         AdNetworkType type = ad_networks[ad_index];
-
-        if (type == ADMOB || type == FAN_BIDDING_ADMOB) {
-            if (adMobInterstitialAd == null) {
-                loadInterstitialAd(0, 0);
-                return false;
-            }
-            adMobInterstitialAd.show(activity);
-        } else if (type == MANAGER || type == FAN_BIDDING_AD_MANAGER) {
-            if (adManagerInterstitialAd == null) {
-                loadInterstitialAd(0, 0);
-                return false;
-            }
-            adManagerInterstitialAd.show(activity);
-        } else if (type == FAN) {
-            if (fanInterstitialAd == null || !fanInterstitialAd.isAdLoaded()) {
-                loadInterstitialAd(0, 0);
-                return false;
-            }
-            fanInterstitialAd.show();
-        } else if (type == APPLOVIN || type == APPLOVIN_MAX || type == FAN_BIDDING_APPLOVIN_MAX) {
+        if (type == APPLOVIN || type == APPLOVIN_MAX) {
             if (maxInterstitialAd == null || !maxInterstitialAd.isReady()) {
                 loadInterstitialAd(0, 0);
                 return false;

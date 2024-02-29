@@ -8,15 +8,9 @@ import static dreamspace.ads.sdk.AdConfig.ad_enable_interstitial;
 import static dreamspace.ads.sdk.AdConfig.ad_enable_open_app;
 import static dreamspace.ads.sdk.AdConfig.ad_enable_rewarded;
 import static dreamspace.ads.sdk.AdConfig.ad_network;
-import static dreamspace.ads.sdk.data.AdNetworkType.ADMOB;
 import static dreamspace.ads.sdk.data.AdNetworkType.APPLOVIN;
 import static dreamspace.ads.sdk.data.AdNetworkType.APPLOVIN_DISCOVERY;
 import static dreamspace.ads.sdk.data.AdNetworkType.APPLOVIN_MAX;
-import static dreamspace.ads.sdk.data.AdNetworkType.FAN;
-import static dreamspace.ads.sdk.data.AdNetworkType.FAN_BIDDING_ADMOB;
-import static dreamspace.ads.sdk.data.AdNetworkType.FAN_BIDDING_AD_MANAGER;
-import static dreamspace.ads.sdk.data.AdNetworkType.FAN_BIDDING_APPLOVIN_MAX;
-import static dreamspace.ads.sdk.data.AdNetworkType.MANAGER;
 
 import android.app.Activity;
 import android.content.Context;
@@ -84,30 +78,9 @@ public class AdNetwork {
         }
 
         ad_networks = Arrays.asList(AdConfig.ad_networks);
-        // init admob
-        if (Tools.contains(ad_networks, ADMOB, MANAGER, FAN_BIDDING_ADMOB, FAN_BIDDING_AD_MANAGER)) {
-            Log.d(TAG, "ADMOB, MANAGER, FAN_BIDDING_ADMOB, FAN_BIDDING_AD_MANAGER init");
-            MobileAds.initialize(this.activity);
-            MobileAds.initialize(activity, initializationStatus -> {
-                Map<String, AdapterStatus> statusMap = initializationStatus.getAdapterStatusMap();
-                for (String adapterClass : statusMap.keySet()) {
-                    AdapterStatus adapterStatus = statusMap.get(adapterClass);
-                    assert adapterStatus != null;
-                    Log.d(TAG, String.format("Adapter name: %s, Description: %s, Latency: %d", adapterClass, adapterStatus.getDescription(), adapterStatus.getLatency()));
-                }
-            });
-            AudienceNetworkInitializeHelper.initializeAd(activity, BuildConfig.DEBUG);
-        }
-
-        // init fan
-        if (Tools.contains(ad_networks, FAN)) {
-            Log.d(TAG, "FAN init");
-            AudienceNetworkAds.initialize(this.activity);
-            AdSettings.setIntegrationErrorMode(INTEGRATION_ERROR_CALLBACK_MODE);
-        }
 
         // init applovin
-        if (Tools.contains(ad_networks, APPLOVIN, APPLOVIN_MAX, FAN_BIDDING_APPLOVIN_MAX)) {
+        if (Tools.contains(ad_networks, APPLOVIN, APPLOVIN_MAX)) {
             Log.d(TAG, "APPLOVIN, APPLOVIN_MAX, FAN_BIDDING_APPLOVIN_MAX init");
             AppLovinSdk appLovinSdk;
             AppLovinSdkSettings settings = new AppLovinSdkSettings(activity);
@@ -115,6 +88,7 @@ public class AdNetwork {
             appLovinSdk = AppLovinSdk.getInstance(activity);
             if (BuildConfig.DEBUG) {
                 appLovinSdk = AppLovinSdk.getInstance(settings, activity);
+                appLovinSdk.showMediationDebugger();
             }
             appLovinSdk.setMediationProvider(AppLovinMediationProvider.MAX);
             appLovinSdk.initializeSdk(new AppLovinSdk.SdkInitializationListener() {

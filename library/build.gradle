@@ -36,34 +36,18 @@ dependencies {
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.9.0'
-    implementation 'com.google.android.gms:play-services-ads-identifier:18.0.1'
-    implementation 'com.google.android.gms:play-services-appset:16.0.2'
-    implementation 'com.google.android.gms:play-services-basement:18.2.0'
 
     implementation 'androidx.lifecycle:lifecycle-process:2.5.1'
     implementation 'androidx.lifecycle:lifecycle-runtime:2.5.1'
     implementation 'androidx.lifecycle:lifecycle-common-java8:2.5.1'
 
-    // ump sdk
-    implementation 'com.google.android.ump:user-messaging-platform:2.1.0'
-
     //Ad Networks
-    implementation 'com.google.android.gms:play-services-ads:22.5.0'
-    implementation 'com.facebook.android:audience-network-sdk:6.16.0'
     implementation 'com.applovin:applovin-sdk:11.11.3'
-
-    //AdMob mediation
-    implementation 'com.google.ads.mediation:applovin:11.11.3.0'
-    implementation 'com.google.ads.mediation:facebook:6.16.0.0'
 
     //Applovin mediation
     implementation 'com.applovin.mediation:google-ad-manager-adapter:22.5.0.0'
     implementation 'com.applovin.mediation:google-adapter:22.5.0.0'
     implementation 'com.applovin.mediation:facebook-adapter:6.16.0.0'
-
-    //GDPR
-    implementation 'com.google.android.ump:user-messaging-platform:2.1.0'
-    implementation 'com.google.android.ads.consent:consent-library:1.0.8'
 }
 
 afterEvaluate {
@@ -83,7 +67,7 @@ afterEvaluate {
                 from components.release
                 groupId = "dream-space"
                 artifactId = "dreamspace.ads.sdk"
-                version = "3.0.1-triple"
+                version = "3.0.1-applovin-only"
             }
         }
     }
