@@ -23,4 +23,8 @@ git checkout is-only
 git tag 4.0-is-only
 git push origin 4.0-is-only
 
+git checkout none
+git tag 4.0-none
+git push origin 4.0-none
+
 </code>
