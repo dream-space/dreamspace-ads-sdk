@@ -18,6 +18,9 @@
             android:name="applovin.sdk.key"
             android:value="@string/applovin_sdk_key" />
 
+        <meta-data android:name="com.startapp.sdk.APPLICATION_ID"
+            android:value="@string/startapp_app_id" />
+
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />

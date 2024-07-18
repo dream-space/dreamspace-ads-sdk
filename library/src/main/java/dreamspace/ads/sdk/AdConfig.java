@@ -60,6 +60,7 @@ public class AdConfig implements Serializable {
     public static String ad_applovin_interstitial_zone_id = "d0eea040d4bd561e";
     public static String ad_applovin_rewarded_zone_id = "5d799aeefef733a1";
 
+    @Deprecated
     public static String ad_startapp_app_id = "0";
 
     public static String ad_wortise_app_id = "test-app-id";

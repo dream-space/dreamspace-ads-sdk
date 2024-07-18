@@ -35,7 +35,7 @@ import android.widget.LinearLayout;
 import com.applovin.sdk.AppLovinMediationProvider;
 import com.applovin.sdk.AppLovinSdk;
 import com.applovin.sdk.AppLovinSdkConfiguration;
-import com.applovin.sdk.AppLovinSdkSettings;
+import com.applovin.sdk.AppLovinSdkInitializationConfiguration;
 import com.facebook.ads.AdSettings;
 import com.facebook.ads.AudienceNetworkAds;
 import com.google.android.gms.ads.MobileAds;
@@ -156,35 +156,41 @@ public class AdNetwork {
         // init applovin
         if (Tools.contains(ad_networks, APPLOVIN, APPLOVIN_MAX, FAN_BIDDING_APPLOVIN_MAX)) {
             Log.d(TAG, "APPLOVIN, APPLOVIN_MAX, FAN_BIDDING_APPLOVIN_MAX init");
-            AppLovinSdk appLovinSdk;
-            AppLovinSdkSettings settings = new AppLovinSdkSettings(activity);
-            settings.setTestDeviceAdvertisingIds(Arrays.asList(GAID));
-            appLovinSdk = AppLovinSdk.getInstance(activity);
-            if (BuildConfig.DEBUG) {
-                appLovinSdk = AppLovinSdk.getInstance(settings, activity);
-            }
-            appLovinSdk.setMediationProvider(AppLovinMediationProvider.MAX);
-            appLovinSdk.initializeSdk(new AppLovinSdk.SdkInitializationListener() {
+            AudienceNetworkInitializeHelper.initialize(activity);
+            String applovin_sdk_key = activity.getString(R.string.applovin_sdk_key);
+            AppLovinSdkInitializationConfiguration initConfig = AppLovinSdkInitializationConfiguration.builder(applovin_sdk_key, activity)
+                    .setMediationProvider( AppLovinMediationProvider.MAX )
+                    .build();
+
+            // Initialize the SDK with the configuration
+            AppLovinSdk.getInstance(activity).initialize( initConfig, new AppLovinSdk.SdkInitializationListener() {
                 @Override
-                public void onSdkInitialized(AppLovinSdkConfiguration appLovinSdkConfiguration) {
+                public void onSdkInitialized(final AppLovinSdkConfiguration sdkConfig) {
                     Log.d(TAG, "APPLOVIN, APPLOVIN_MAX, FAN_BIDDING_APPLOVIN_MAX onSdkInitialized");
                 }
-            });
-            AudienceNetworkInitializeHelper.initialize(activity);
+            } );
         }
 
         // init applovin discovery
         if (Tools.contains(ad_networks, APPLOVIN_DISCOVERY)) {
+            String applovin_sdk_key = activity.getString(R.string.applovin_sdk_key);
+            AppLovinSdkInitializationConfiguration initConfig = AppLovinSdkInitializationConfiguration.builder(applovin_sdk_key, activity).build();
             Log.d(TAG, "APPLOVIN_DISCOVERY init");
-            AppLovinSdk.initializeSdk(activity);
+            AppLovinSdk.getInstance(activity).initialize(initConfig, new AppLovinSdk.SdkInitializationListener() {
+                @Override
+                public void onSdkInitialized(AppLovinSdkConfiguration appLovinSdkConfiguration) {
+                    Log.d(TAG, "APPLOVIN_DISCOVERY onSdkInitialized");
+                }
+            });
         }
 
         // init startapp
         if (Tools.contains(ad_networks, STARTAPP)) {
             Log.d(TAG, "STARTAPP init");
-            StartAppSDK.init(activity, ad_startapp_app_id, false);
+            String startapp_app_id = activity.getString(R.string.startapp_app_id);
+            StartAppSDK.init(activity, startapp_app_id);
             StartAppSDK.setTestAdsEnabled(BuildConfig.DEBUG);
-            StartAppAd.disableSplash();
+            StartAppAd.disableAutoInterstitial();
             StartAppSDK.setUserConsent(activity, "pas", System.currentTimeMillis(), true);
         }
 

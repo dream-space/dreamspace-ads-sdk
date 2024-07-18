@@ -7,4 +7,7 @@
     <!--APPLOVIN property -->
     <string name="applovin_sdk_key">qez2AtzPV4t9GTffZnbRtIPSGPOimJX3MS96qskIIOD5TJGBKpC_xPJDkJJPOCVQ3HSlMJmxiAPxCBps2S2tET</string>
 
+    <!--APPLOVIN property -->
+    <string name="startapp_app_id">210485190T</string>
+
 </resources>
