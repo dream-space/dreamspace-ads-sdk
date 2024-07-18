@@ -27,8 +27,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
     lintOptions {
         disable 'GradleDependency', 'ExpiringTargetSdkVersion'
@@ -56,9 +56,10 @@ afterEvaluate {
         }
         publications {
             release(MavenPublication) {
+                from components.findByName('release')
                 groupId = "dream-space"
                 artifactId = "dreamspace.ads.sdk"
-                version = "3.0.1-all"
+                version = "4.0-all"
             }
         }
     }
