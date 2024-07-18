@@ -46,27 +46,4 @@ public class AdConfig implements Serializable {
     public static String ad_ironsource_rewarded_unit_id = "DefaultRewardedVideo";
     public static String ad_ironsource_interstitial_unit_id = "DefaultInterstitial";
 
-    public static String ad_unity_game_id = "4988568";
-    public static String ad_unity_banner_unit_id = "Banner_Android";
-    public static String ad_unity_rewarded_unit_id = "Rewarded_Android";
-    public static String ad_unity_interstitial_unit_id = "Interstitial_Android";
-
-    public static String ad_applovin_banner_unit_id = "a3a3a5b44c763304";
-    public static String ad_applovin_interstitial_unit_id = "35f9c01af124fcb9";
-    public static String ad_applovin_rewarded_unit_id = "21dba76a66f7c9fe";
-    public static String ad_applovin_open_app_unit_id = "7c3fcecd43d3f90c";
-
-    public static String ad_applovin_banner_zone_id = "df40a31072feccab";
-    public static String ad_applovin_interstitial_zone_id = "d0eea040d4bd561e";
-    public static String ad_applovin_rewarded_zone_id = "5d799aeefef733a1";
-
-    @Deprecated
-    public static String ad_startapp_app_id = "0";
-
-    public static String ad_wortise_app_id = "test-app-id";
-    public static String ad_wortise_banner_unit_id = "test-banner";
-    public static String ad_wortise_interstitial_unit_id = "test-interstitial";
-    public static String ad_wortise_rewarded_unit_id = "test-rewarded";
-    public static String ad_wortise_open_app_unit_id = "test-app-open";
-
 }

@@ -10,7 +10,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import dreamspace.ads.sdk.AdConfig;
 import dreamspace.ads.sdk.AdNetwork;
 import dreamspace.ads.sdk.data.AdNetworkType;
-import dreamspace.ads.sdk.gdpr.UMP;
 import dreamspace.ads.sdk.listener.AdRewardedListener;
 
 public class MainActivity extends AppCompatActivity {
@@ -59,33 +58,8 @@ public class MainActivity extends AppCompatActivity {
             initAndLoad(adNetwork);
         });
 
-        ((Button) findViewById(R.id.banner_unity)).setOnClickListener(view -> {
-            AdConfig.ad_networks = new AdNetworkType[] { AdNetworkType.UNITY };
-            initAndLoad(adNetwork);
-        });
-
         ((Button) findViewById(R.id.banner_ironsource)).setOnClickListener(view -> {
             AdConfig.ad_networks = new AdNetworkType[] { AdNetworkType.IRONSOURCE };
-            initAndLoad(adNetwork);
-        });
-
-        ((Button) findViewById(R.id.banner_applovin)).setOnClickListener(view -> {
-            AdConfig.ad_networks = new AdNetworkType[] { AdNetworkType.APPLOVIN };
-            initAndLoad(adNetwork);
-        });
-
-        ((Button) findViewById(R.id.banner_applovin_disc)).setOnClickListener(view -> {
-            AdConfig.ad_networks = new AdNetworkType[] { AdNetworkType.APPLOVIN_DISCOVERY };
-            initAndLoad(adNetwork);
-        });
-
-        ((Button) findViewById(R.id.banner_startapp)).setOnClickListener(view -> {
-            AdConfig.ad_networks = new AdNetworkType[] { AdNetworkType.STARTAPP };
-            initAndLoad(adNetwork);
-        });
-
-        ((Button) findViewById(R.id.banner_wortise)).setOnClickListener(view -> {
-            AdConfig.ad_networks = new AdNetworkType[] { AdNetworkType.WORTISE };
             initAndLoad(adNetwork);
         });
 

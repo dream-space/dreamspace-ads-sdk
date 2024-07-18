@@ -16,7 +16,6 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.admanager.AdManagerAdRequest;
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
-import com.unity3d.services.banners.UnityBannerSize;
 
 import java.util.List;
 
@@ -38,16 +37,6 @@ public class Tools {
         int adWidth = (int) (widthPixels / density);
         // Step 3 - Get adaptive ad size and return for setting on the ad view.
         return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(activity, adWidth);
-    }
-
-    public static com.wortise.ads.AdSize getWortiseAdSize(Activity activity) {
-        Display display = activity.getWindowManager().getDefaultDisplay();
-        DisplayMetrics outMetrics = new DisplayMetrics();
-        display.getMetrics(outMetrics);
-        float widthPixels = outMetrics.widthPixels;
-        float density = outMetrics.density;
-        int adWidth = (int) (widthPixels / density);
-        return com.wortise.ads.AdSize.getAnchoredAdaptiveBannerAdSize(activity, adWidth);
     }
 
     public static AdSize getAdSizeMREC() {
@@ -73,16 +62,6 @@ public class Tools {
             if (ad_networks.contains(t)) return true;
         }
         return false;
-    }
-
-    public static UnityBannerSize getUnityBannerSize(Activity activity) {
-        Display display = activity.getWindowManager().getDefaultDisplay();
-        DisplayMetrics outMetrics = new DisplayMetrics();
-        display.getMetrics(outMetrics);
-        float widthPixels = outMetrics.widthPixels;
-        float density = outMetrics.density;
-        int adWidth = (int) (widthPixels / density);
-        return new UnityBannerSize(adWidth, 50);
     }
 
 

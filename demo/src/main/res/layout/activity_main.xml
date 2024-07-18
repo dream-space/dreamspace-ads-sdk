@@ -58,37 +58,12 @@
                     android:textColor="#3C3C3C" />
 
                 <Button
-                    android:id="@+id/banner_unity"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="?android:selectableItemBackground"
-                    android:text="UNITY"
-                    android:textColor="#3C3C3C" />
-
-                <Button
                     android:id="@+id/banner_ironsource"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="?android:selectableItemBackground"
                     android:text="IRONSOURCE"
                     android:textColor="#3C3C3C" />
-
-                <Button
-                    android:id="@+id/banner_applovin"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="?android:selectableItemBackground"
-                    android:text="APPLOVIN MAX"
-                    android:textColor="#3C3C3C" />
-
-                <Button
-                    android:id="@+id/banner_applovin_disc"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="?android:selectableItemBackground"
-                    android:text="APPLOVIN DISCOVERY"
-                    android:textColor="#3C3C3C" />
-
                 <Button
                     android:id="@+id/banner_manager"
                     android:layout_width="match_parent"
@@ -97,21 +72,6 @@
                     android:text="MANAGER"
                     android:textColor="#3C3C3C" />
 
-                <Button
-                    android:id="@+id/banner_startapp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="?android:selectableItemBackground"
-                    android:text="STARTAPP"
-                    android:textColor="#3C3C3C" />
-
-                <Button
-                    android:id="@+id/banner_wortise"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="?android:selectableItemBackground"
-                    android:text="WORTISE"
-                    android:textColor="#3C3C3C" />
 
             </LinearLayout>
 
