@@ -53,21 +53,6 @@ public class MainActivity extends AppCompatActivity {
             adNetwork.loadInterstitialAd(true);
         });
 
-        ((Button) findViewById(R.id.banner_fan)).setOnClickListener(view -> {
-            AdConfig.ad_networks = new AdNetworkType[] { AdNetworkType.FAN };
-            initAndLoad(adNetwork);
-        });
-
-        ((Button) findViewById(R.id.banner_ironsource)).setOnClickListener(view -> {
-            AdConfig.ad_networks = new AdNetworkType[] { AdNetworkType.IRONSOURCE };
-            initAndLoad(adNetwork);
-        });
-
-        ((Button) findViewById(R.id.banner_manager)).setOnClickListener(view -> {
-            AdConfig.ad_networks = new AdNetworkType[] { AdNetworkType.MANAGER };
-            initAndLoad(adNetwork);
-        });
-
         // Interstitial section -------------------------------------------------------------------
 
         ((Button) findViewById(R.id.inters_all)).setOnClickListener(view -> {
