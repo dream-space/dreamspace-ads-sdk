@@ -4,8 +4,8 @@
 
 <code>
 git checkout main
-git tag 4.0.1-all
-git push origin 4.0.1-all
+git tag 4.0.2-all
+git push origin 4.0.2-all
 
 git checkout admob-fan
 git tag 4.0.1-admob-fan
