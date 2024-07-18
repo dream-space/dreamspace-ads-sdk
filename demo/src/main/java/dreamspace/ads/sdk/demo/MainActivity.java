@@ -46,25 +46,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        ((Button) findViewById(R.id.banner_admob)).setOnClickListener(view -> {
-            AdConfig.ad_networks = new AdNetworkType[] { AdNetworkType.ADMOB };
-            adNetwork.init();
-            adNetwork.loadBannerAd(true, findViewById(R.id.banner_container));
-            adNetwork.loadInterstitialAd(true);
-        });
-
-        ((Button) findViewById(R.id.banner_fan)).setOnClickListener(view -> {
-            AdConfig.ad_networks = new AdNetworkType[] { AdNetworkType.FAN };
-            initAndLoad(adNetwork);
-        });
 
         ((Button) findViewById(R.id.banner_ironsource)).setOnClickListener(view -> {
             AdConfig.ad_networks = new AdNetworkType[] { AdNetworkType.IRONSOURCE };
-            initAndLoad(adNetwork);
-        });
-
-        ((Button) findViewById(R.id.banner_manager)).setOnClickListener(view -> {
-            AdConfig.ad_networks = new AdNetworkType[] { AdNetworkType.MANAGER };
             initAndLoad(adNetwork);
         });
 

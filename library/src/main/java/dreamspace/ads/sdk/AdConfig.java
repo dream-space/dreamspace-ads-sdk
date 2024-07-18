@@ -21,7 +21,7 @@ public class AdConfig implements Serializable {
     public static int retry_from_start_max = 0;
 
     public static AdNetworkType[] ad_networks = {
-            AdNetworkType.ADMOB
+            AdNetworkType.IRONSOURCE
     };
 
     public static int ad_inters_interval = 0;

@@ -1,6 +1,5 @@
 package dreamspace.ads.sdk;
 
-import static com.facebook.ads.AdSettings.IntegrationErrorMode.INTEGRATION_ERROR_CALLBACK_MODE;
 import static dreamspace.ads.sdk.AdConfig.ad_admob_open_app_unit_id;
 import static dreamspace.ads.sdk.AdConfig.ad_enable;
 import static dreamspace.ads.sdk.AdConfig.ad_enable_banner;
@@ -9,29 +8,18 @@ import static dreamspace.ads.sdk.AdConfig.ad_enable_open_app;
 import static dreamspace.ads.sdk.AdConfig.ad_enable_rewarded;
 import static dreamspace.ads.sdk.AdConfig.ad_ironsource_app_key;
 import static dreamspace.ads.sdk.AdConfig.ad_network;
-import static dreamspace.ads.sdk.data.AdNetworkType.ADMOB;
-import static dreamspace.ads.sdk.data.AdNetworkType.FAN;
-import static dreamspace.ads.sdk.data.AdNetworkType.FAN_BIDDING_ADMOB;
-import static dreamspace.ads.sdk.data.AdNetworkType.FAN_BIDDING_AD_MANAGER;
-import static dreamspace.ads.sdk.data.AdNetworkType.FAN_BIDDING_IRONSOURCE;
 import static dreamspace.ads.sdk.data.AdNetworkType.IRONSOURCE;
-import static dreamspace.ads.sdk.data.AdNetworkType.MANAGER;
 
 import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 import android.widget.LinearLayout;
 
-import com.facebook.ads.AdSettings;
-import com.facebook.ads.AudienceNetworkAds;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.initialization.AdapterStatus;
 import com.ironsource.mediationsdk.IronSource;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import dreamspace.ads.sdk.data.AdNetworkType;
 import dreamspace.ads.sdk.data.SharedPref;
@@ -40,7 +28,6 @@ import dreamspace.ads.sdk.format.InterstitialAdFormat;
 import dreamspace.ads.sdk.format.OpenAppAdFormat;
 import dreamspace.ads.sdk.format.RewardAdFormat;
 import dreamspace.ads.sdk.gdpr.UMP;
-import dreamspace.ads.sdk.helper.AudienceNetworkInitializeHelper;
 import dreamspace.ads.sdk.listener.AdOpenListener;
 import dreamspace.ads.sdk.listener.AdRewardedListener;
 import dreamspace.ads.sdk.utils.Tools;
@@ -81,29 +68,11 @@ public class AdNetwork {
 
         ad_networks = Arrays.asList(AdConfig.ad_networks);
         // init admob
-        if (Tools.contains(ad_networks, ADMOB, MANAGER, FAN_BIDDING_ADMOB, FAN_BIDDING_AD_MANAGER)) {
-            Log.d(TAG, "ADMOB, MANAGER, FAN_BIDDING_ADMOB, FAN_BIDDING_AD_MANAGER init");
-            MobileAds.initialize(this.activity);
-            MobileAds.initialize(activity, initializationStatus -> {
-                Map<String, AdapterStatus> statusMap = initializationStatus.getAdapterStatusMap();
-                for (String adapterClass : statusMap.keySet()) {
-                    AdapterStatus adapterStatus = statusMap.get(adapterClass);
-                    assert adapterStatus != null;
-                    Log.d(TAG, String.format("Adapter name: %s, Description: %s, Latency: %d", adapterClass, adapterStatus.getDescription(), adapterStatus.getLatency()));
-                }
-            });
-            AudienceNetworkInitializeHelper.initializeAd(activity, BuildConfig.DEBUG);
-        }
 
         // init fan
-        if (Tools.contains(ad_networks, FAN)) {
-            Log.d(TAG, "FAN init");
-            AudienceNetworkAds.initialize(this.activity);
-            AdSettings.setIntegrationErrorMode(INTEGRATION_ERROR_CALLBACK_MODE);
-        }
 
         // init iron source
-        if (Tools.contains(ad_networks, IRONSOURCE, FAN_BIDDING_IRONSOURCE)) {
+        if (Tools.contains(ad_networks, IRONSOURCE)) {
             Log.d(TAG, "IRONSOURCE init");
             String advertisingId = IronSource.getAdvertiserId(activity);
             IronSource.setUserId(advertisingId);
