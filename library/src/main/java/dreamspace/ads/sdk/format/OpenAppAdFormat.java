@@ -10,8 +10,6 @@ import static dreamspace.ads.sdk.data.AdNetworkType.ADMOB;
 import static dreamspace.ads.sdk.data.AdNetworkType.FAN;
 import static dreamspace.ads.sdk.data.AdNetworkType.FAN_BIDDING_ADMOB;
 import static dreamspace.ads.sdk.data.AdNetworkType.FAN_BIDDING_AD_MANAGER;
-import static dreamspace.ads.sdk.data.AdNetworkType.FAN_BIDDING_IRONSOURCE;
-import static dreamspace.ads.sdk.data.AdNetworkType.IRONSOURCE;
 import static dreamspace.ads.sdk.data.AdNetworkType.MANAGER;
 
 import android.annotation.SuppressLint;
@@ -31,14 +29,9 @@ import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.admanager.AdManagerAdRequest;
 import com.google.android.gms.ads.appopen.AppOpenAd;
-import com.ironsource.mediationsdk.IronSource;
-import com.ironsource.mediationsdk.adunit.adapter.utility.AdInfo;
-import com.ironsource.mediationsdk.logger.IronSourceError;
-import com.ironsource.mediationsdk.sdk.LevelPlayInterstitialListener;
 
 import java.util.Date;
 
-import dreamspace.ads.sdk.AdConfig;
 import dreamspace.ads.sdk.AdNetwork;
 import dreamspace.ads.sdk.data.AdNetworkType;
 import dreamspace.ads.sdk.listener.ActivityListener;
@@ -179,47 +172,6 @@ public class OpenAppAdFormat {
             // load ads
             fanInterstitialAd.loadAd(fanInterstitialAd.buildLoadAdConfig().withAdListener(interstitialAdListener).build());
 
-        } else if ((type == IRONSOURCE || type == FAN_BIDDING_IRONSOURCE) && ad_replace_unsupported_open_app_with_interstitial_on_splash) {
-            IronSource.setLevelPlayInterstitialListener(new LevelPlayInterstitialListener() {
-                @Override
-                public void onAdReady(AdInfo adInfo) {
-                    Log.d(TAG, type + " Open App loaded _ splash");
-                    loadTime = (new Date()).getTime();
-                    IronSource.showInterstitial(AdConfig.ad_ironsource_interstitial_unit_id);
-                }
-
-                @Override
-                public void onAdLoadFailed(IronSourceError ironSourceError) {
-                    Log.d(TAG, type + " Open App load failed _ splash : " + ironSourceError.getErrorMessage());
-                    retryLoadAndShowOpenAppAd(ad_index, retry_count, listener);
-                }
-
-                @Override
-                public void onAdOpened(AdInfo adInfo) {
-
-                }
-
-                @Override
-                public void onAdShowSucceeded(AdInfo adInfo) {
-
-                }
-
-                @Override
-                public void onAdShowFailed(IronSourceError ironSourceError, AdInfo adInfo) {
-                    openAppSplashFinish(listener);
-                }
-
-                @Override
-                public void onAdClicked(AdInfo adInfo) {
-
-                }
-
-                @Override
-                public void onAdClosed(AdInfo adInfo) {
-                    openAppSplashFinish(listener);
-                }
-            });
-            IronSource.loadInterstitial();
         } else {
             openAppSplashFinish(listener);
         }

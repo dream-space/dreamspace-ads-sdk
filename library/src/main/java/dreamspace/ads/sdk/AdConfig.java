@@ -16,7 +16,7 @@ public class AdConfig implements Serializable {
     public static boolean debug_mode = true;
     public static boolean enable_gdpr = true;
 
-    public static AdNetworkType ad_network = AdNetworkType.IRONSOURCE;
+    public static AdNetworkType ad_network = AdNetworkType.ADMOB;
 
     public static int retry_from_start_max = 0;
 

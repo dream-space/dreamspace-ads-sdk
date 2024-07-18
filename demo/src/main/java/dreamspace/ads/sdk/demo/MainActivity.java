@@ -58,11 +58,6 @@ public class MainActivity extends AppCompatActivity {
             initAndLoad(adNetwork);
         });
 
-        ((Button) findViewById(R.id.banner_ironsource)).setOnClickListener(view -> {
-            AdConfig.ad_networks = new AdNetworkType[] { AdNetworkType.IRONSOURCE };
-            initAndLoad(adNetwork);
-        });
-
         ((Button) findViewById(R.id.banner_manager)).setOnClickListener(view -> {
             AdConfig.ad_networks = new AdNetworkType[] { AdNetworkType.MANAGER };
             initAndLoad(adNetwork);

@@ -6,8 +6,6 @@ import static dreamspace.ads.sdk.data.AdNetworkType.ADMOB;
 import static dreamspace.ads.sdk.data.AdNetworkType.FAN;
 import static dreamspace.ads.sdk.data.AdNetworkType.FAN_BIDDING_ADMOB;
 import static dreamspace.ads.sdk.data.AdNetworkType.FAN_BIDDING_AD_MANAGER;
-import static dreamspace.ads.sdk.data.AdNetworkType.FAN_BIDDING_IRONSOURCE;
-import static dreamspace.ads.sdk.data.AdNetworkType.IRONSOURCE;
 import static dreamspace.ads.sdk.data.AdNetworkType.MANAGER;
 
 import android.app.Activity;
@@ -166,47 +164,6 @@ public class InterstitialAdFormat {
             // load ads
             fanInterstitialAd.loadAd(fanInterstitialAd.buildLoadAdConfig().withAdListener(interstitialAdListener).build());
 
-        } else if (type == IRONSOURCE || type == FAN_BIDDING_IRONSOURCE) {
-            IronSource.setLevelPlayInterstitialListener(new LevelPlayInterstitialListener() {
-                @Override
-                public void onAdReady(AdInfo adInfo) {
-                    Log.d(TAG, type.name() + " interstitial onInterstitialAdReady");
-                }
-
-                @Override
-                public void onAdLoadFailed(IronSourceError ironSourceError) {
-                    Log.d(TAG, type.name() + " interstitial onAdLoadFailed : " + ironSourceError.getErrorMessage());
-                    retryLoadInterstitial(ad_index, retry_count);
-                }
-
-                @Override
-                public void onAdOpened(AdInfo adInfo) {
-
-                }
-
-                @Override
-                public void onAdShowSucceeded(AdInfo adInfo) {
-
-                }
-
-                @Override
-                public void onAdShowFailed(IronSourceError ironSourceError, AdInfo adInfo) {
-
-                }
-
-                @Override
-                public void onAdClicked(AdInfo adInfo) {
-
-                }
-
-                @Override
-                public void onAdClosed(AdInfo adInfo) {
-                    sharedPref.setIntersCounter(0);
-                    loadInterstitialAd(0, 0);
-                }
-            });
-            IronSource.loadInterstitial();
-
         }
     }
 
@@ -242,13 +199,6 @@ public class InterstitialAdFormat {
                 return false;
             }
             fanInterstitialAd.show();
-        } else if (type == IRONSOURCE || type == FAN_BIDDING_IRONSOURCE) {
-            if (IronSource.isInterstitialReady()) {
-                IronSource.showInterstitial(AdConfig.ad_ironsource_interstitial_unit_id);
-            } else {
-                loadInterstitialAd(0, 0);
-                return false;
-            }
         }
         return true;
     }

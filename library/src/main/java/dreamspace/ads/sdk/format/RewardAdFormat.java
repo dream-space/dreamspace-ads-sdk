@@ -2,15 +2,12 @@ package dreamspace.ads.sdk.format;
 
 import static dreamspace.ads.sdk.AdConfig.ad_admob_rewarded_unit_id;
 import static dreamspace.ads.sdk.AdConfig.ad_fan_rewarded_unit_id;
-import static dreamspace.ads.sdk.AdConfig.ad_ironsource_rewarded_unit_id;
 import static dreamspace.ads.sdk.AdConfig.ad_manager_rewarded_unit_id;
 import static dreamspace.ads.sdk.AdConfig.ad_networks;
 import static dreamspace.ads.sdk.data.AdNetworkType.ADMOB;
 import static dreamspace.ads.sdk.data.AdNetworkType.FAN;
 import static dreamspace.ads.sdk.data.AdNetworkType.FAN_BIDDING_ADMOB;
 import static dreamspace.ads.sdk.data.AdNetworkType.FAN_BIDDING_AD_MANAGER;
-import static dreamspace.ads.sdk.data.AdNetworkType.FAN_BIDDING_IRONSOURCE;
-import static dreamspace.ads.sdk.data.AdNetworkType.IRONSOURCE;
 import static dreamspace.ads.sdk.data.AdNetworkType.MANAGER;
 
 import android.app.Activity;
@@ -25,11 +22,6 @@ import com.facebook.ads.RewardedVideoAdListener;
 import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
-import com.ironsource.mediationsdk.IronSource;
-import com.ironsource.mediationsdk.adunit.adapter.utility.AdInfo;
-import com.ironsource.mediationsdk.logger.IronSourceError;
-import com.ironsource.mediationsdk.model.Placement;
-import com.ironsource.mediationsdk.sdk.LevelPlayRewardedVideoListener;
 
 import dreamspace.ads.sdk.AdConfig;
 import dreamspace.ads.sdk.AdNetwork;
@@ -158,47 +150,6 @@ public class RewardAdFormat {
 
                 }
             }).build());
-        } else if (type == IRONSOURCE || type == FAN_BIDDING_IRONSOURCE) {
-            IronSource.setLevelPlayRewardedVideoListener(new LevelPlayRewardedVideoListener() {
-                @Override
-                public void onAdAvailable(AdInfo adInfo) {
-                    Log.d(TAG, type.name() + " rewarded onAdLoaded");
-                }
-
-                @Override
-                public void onAdUnavailable() {
-
-                }
-
-                @Override
-                public void onAdOpened(AdInfo adInfo) {
-
-                }
-
-                @Override
-                public void onAdShowFailed(IronSourceError ironSourceError, AdInfo adInfo) {
-                    Log.d(TAG, type.name() + " rewarded onAdShowFailed : " + ironSourceError.getErrorMessage());
-                    retryLoadReward(ad_index, retry_count, listener);
-                }
-
-                @Override
-                public void onAdClicked(Placement placement, AdInfo adInfo) {
-
-                }
-
-                @Override
-                public void onAdRewarded(Placement placement, AdInfo adInfo) {
-                    listener.onComplete();
-                    Log.d(TAG, type.name() + " rewarded onComplete");
-                }
-
-                @Override
-                public void onAdClosed(AdInfo adInfo) {
-                    Log.d(TAG, type.name() + " rewarded onDismissed");
-                    retryLoadReward(ad_index, retry_count, listener);
-                    listener.onDismissed();
-                }
-            });
         }
     }
 
@@ -226,12 +177,6 @@ public class RewardAdFormat {
         } else if (type == FAN) {
             if (fanRewardedVideoAd != null && fanRewardedVideoAd.isAdLoaded()) {
                 fanRewardedVideoAd.show();
-            } else {
-                listener.onError();
-            }
-        } else if (type == IRONSOURCE || type == FAN_BIDDING_IRONSOURCE) {
-            if (IronSource.isRewardedVideoAvailable()) {
-                IronSource.showRewardedVideo(ad_ironsource_rewarded_unit_id);
             } else {
                 listener.onError();
             }
