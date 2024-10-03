@@ -54,7 +54,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         ((Button) findViewById(R.id.banner_fan)).setOnClickListener(view -> {
-            AdConfig.ad_networks = new AdNetworkType[] { AdNetworkType.FAN };
             initAndLoad(adNetwork);
         });
 

@@ -3,10 +3,6 @@ package dreamspace.ads.sdk.format;
 import static dreamspace.ads.sdk.AdConfig.ad_manager_interstitial_unit_id;
 import static dreamspace.ads.sdk.AdConfig.ad_networks;
 import static dreamspace.ads.sdk.data.AdNetworkType.ADMOB;
-import static dreamspace.ads.sdk.data.AdNetworkType.FAN;
-import static dreamspace.ads.sdk.data.AdNetworkType.FAN_BIDDING_ADMOB;
-import static dreamspace.ads.sdk.data.AdNetworkType.FAN_BIDDING_AD_MANAGER;
-import static dreamspace.ads.sdk.data.AdNetworkType.FAN_BIDDING_IRONSOURCE;
 import static dreamspace.ads.sdk.data.AdNetworkType.IRONSOURCE;
 import static dreamspace.ads.sdk.data.AdNetworkType.MANAGER;
 
@@ -15,10 +11,6 @@ import android.os.Handler;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-
-import com.facebook.ads.Ad;
-import com.facebook.ads.AdError;
-import com.facebook.ads.InterstitialAdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.LoadAdError;
@@ -45,7 +37,6 @@ public class InterstitialAdFormat {
     //Interstitial
     private com.google.android.gms.ads.interstitial.InterstitialAd adMobInterstitialAd;
     private AdManagerInterstitialAd adManagerInterstitialAd;
-    private com.facebook.ads.InterstitialAd fanInterstitialAd;
 
     private static int last_interstitial_index = 0;
 
@@ -65,7 +56,7 @@ public class InterstitialAdFormat {
         if (retry_count > AdConfig.retry_from_start_max) return;
         last_interstitial_index = ad_index;
         AdNetworkType type = ad_networks[ad_index];
-        if (type == ADMOB || type == FAN_BIDDING_ADMOB) {
+        if (type == ADMOB) {
             InterstitialAd.load(activity, AdConfig.ad_admob_interstitial_unit_id, new AdRequest.Builder().build(), new InterstitialAdLoadCallback() {
                 @Override
                 public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
@@ -95,7 +86,7 @@ public class InterstitialAdFormat {
                     retryLoadInterstitial(ad_index, retry_count);
                 }
             });
-        } else if (type == MANAGER || type == FAN_BIDDING_AD_MANAGER) {
+        } else if (type == MANAGER) {
             AdManagerInterstitialAd.load(activity, ad_manager_interstitial_unit_id, Tools.getGoogleAdManagerRequest(), new AdManagerInterstitialAdLoadCallback() {
                 @Override
                 public void onAdLoaded(@NonNull AdManagerInterstitialAd interstitialAd) {
@@ -128,45 +119,7 @@ public class InterstitialAdFormat {
                 }
             });
 
-        } else if (type == FAN) {
-            fanInterstitialAd = new com.facebook.ads.InterstitialAd(activity, AdConfig.ad_fan_interstitial_unit_id);
-            InterstitialAdListener interstitialAdListener = new InterstitialAdListener() {
-                @Override
-                public void onInterstitialDisplayed(Ad ad) {
-
-                }
-
-                @Override
-                public void onInterstitialDismissed(Ad ad) {
-                    sharedPref.setIntersCounter(0);
-                    loadInterstitialAd(0, 0);
-                }
-
-                @Override
-                public void onError(Ad ad, AdError adError) {
-                    adMobInterstitialAd = null;
-                    Log.d(TAG, type.name() + " interstitial onError");
-                    retryLoadInterstitial(ad_index, retry_count);
-                }
-
-                @Override
-                public void onAdLoaded(Ad ad) {
-                    Log.d(TAG, "FAN interstitial onAdLoaded");
-                }
-
-                @Override
-                public void onAdClicked(Ad ad) {
-                }
-
-                @Override
-                public void onLoggingImpression(Ad ad) {
-                }
-            };
-
-            // load ads
-            fanInterstitialAd.loadAd(fanInterstitialAd.buildLoadAdConfig().withAdListener(interstitialAdListener).build());
-
-        } else if (type == IRONSOURCE || type == FAN_BIDDING_IRONSOURCE) {
+        } else if (type == IRONSOURCE) {
             IronSource.setLevelPlayInterstitialListener(new LevelPlayInterstitialListener() {
                 @Override
                 public void onAdReady(AdInfo adInfo) {
@@ -224,25 +177,19 @@ public class InterstitialAdFormat {
         int ad_index = last_interstitial_index;
         AdNetworkType type = ad_networks[ad_index];
 
-        if (type == ADMOB || type == FAN_BIDDING_ADMOB) {
+        if (type == ADMOB) {
             if (adMobInterstitialAd == null) {
                 loadInterstitialAd(0, 0);
                 return false;
             }
             adMobInterstitialAd.show(activity);
-        } else if (type == MANAGER || type == FAN_BIDDING_AD_MANAGER) {
+        } else if (type == MANAGER) {
             if (adManagerInterstitialAd == null) {
                 loadInterstitialAd(0, 0);
                 return false;
             }
             adManagerInterstitialAd.show(activity);
-        } else if (type == FAN) {
-            if (fanInterstitialAd == null || !fanInterstitialAd.isAdLoaded()) {
-                loadInterstitialAd(0, 0);
-                return false;
-            }
-            fanInterstitialAd.show();
-        } else if (type == IRONSOURCE || type == FAN_BIDDING_IRONSOURCE) {
+        } else if (type == IRONSOURCE) {
             if (IronSource.isInterstitialReady()) {
                 IronSource.showInterstitial(AdConfig.ad_ironsource_interstitial_unit_id);
             } else {

@@ -53,13 +53,11 @@ dependencies {
 
     //Ad Networks
     implementation 'com.google.android.gms:play-services-ads:22.5.0'
-    implementation 'com.facebook.android:audience-network-sdk:6.17.0'
     implementation 'com.ironsource.sdk:mediationsdk:8.4.0'
 
     //AdMob mediation
     implementation 'com.google.ads.mediation:unity:4.12.1.0'
     implementation 'com.google.ads.mediation:ironsource:8.1.0.0'
-    implementation 'com.google.ads.mediation:facebook:6.17.0.0'
 
     //GDPR
     implementation 'com.google.android.ump:user-messaging-platform:2.2.0'

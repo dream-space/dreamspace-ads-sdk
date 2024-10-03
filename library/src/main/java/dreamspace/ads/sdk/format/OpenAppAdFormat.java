@@ -1,16 +1,11 @@
 package dreamspace.ads.sdk.format;
 
 import static dreamspace.ads.sdk.AdConfig.ad_admob_open_app_unit_id;
-import static dreamspace.ads.sdk.AdConfig.ad_fan_interstitial_unit_id;
 import static dreamspace.ads.sdk.AdConfig.ad_manager_open_app_unit_id;
 import static dreamspace.ads.sdk.AdConfig.ad_networks;
 import static dreamspace.ads.sdk.AdConfig.ad_replace_unsupported_open_app_with_interstitial_on_splash;
 import static dreamspace.ads.sdk.AdConfig.retry_from_start_max;
 import static dreamspace.ads.sdk.data.AdNetworkType.ADMOB;
-import static dreamspace.ads.sdk.data.AdNetworkType.FAN;
-import static dreamspace.ads.sdk.data.AdNetworkType.FAN_BIDDING_ADMOB;
-import static dreamspace.ads.sdk.data.AdNetworkType.FAN_BIDDING_AD_MANAGER;
-import static dreamspace.ads.sdk.data.AdNetworkType.FAN_BIDDING_IRONSOURCE;
 import static dreamspace.ads.sdk.data.AdNetworkType.IRONSOURCE;
 import static dreamspace.ads.sdk.data.AdNetworkType.MANAGER;
 
@@ -23,8 +18,6 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.facebook.ads.Ad;
-import com.facebook.ads.InterstitialAdListener;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.FullScreenContentCallback;
@@ -78,7 +71,7 @@ public class OpenAppAdFormat {
 
         AdNetworkType type = ad_networks[ad_index];
 
-        if (type == ADMOB || type == FAN_BIDDING_ADMOB) {
+        if (type == ADMOB) {
             Log.d(TAG, type + " loadAndShowOpenAppAd");
             AdRequest request = new AdRequest.Builder().build();
             String unit_id = ad_admob_open_app_unit_id;
@@ -112,7 +105,7 @@ public class OpenAppAdFormat {
                 }
 
             });
-        } else if (type == MANAGER || type == FAN_BIDDING_AD_MANAGER) {
+        } else if (type == MANAGER) {
             @SuppressLint("VisibleForTests") AdManagerAdRequest adManagerAdRequest = new AdManagerAdRequest.Builder().build();
             com.google.android.gms.ads.appopen.AppOpenAd.load(activity, ad_manager_open_app_unit_id, adManagerAdRequest, new com.google.android.gms.ads.appopen.AppOpenAd.AppOpenAdLoadCallback() {
                 @Override
@@ -141,45 +134,7 @@ public class OpenAppAdFormat {
                     retryLoadAndShowOpenAppAd(ad_index, retry_count, listener);
                 }
             });
-        } else if (type == FAN && ad_replace_unsupported_open_app_with_interstitial_on_splash) {
-            com.facebook.ads.InterstitialAd fanInterstitialAd = new com.facebook.ads.InterstitialAd(activity, ad_fan_interstitial_unit_id);
-            InterstitialAdListener interstitialAdListener = new InterstitialAdListener() {
-                @Override
-                public void onInterstitialDisplayed(Ad ad) {
-
-                }
-
-                @Override
-                public void onInterstitialDismissed(Ad ad) {
-                    openAppSplashFinish(listener);
-                }
-
-                @Override
-                public void onError(Ad ad, com.facebook.ads.AdError adError) {
-                    Log.d(TAG, type + " Open App load failed _ splash : " + adError.getErrorMessage());
-                    retryLoadAndShowOpenAppAd(ad_index, retry_count, listener);
-                }
-
-                @Override
-                public void onAdLoaded(Ad ad) {
-                    Log.d(TAG, type + " Open App loaded _ splash");
-                    loadTime = (new Date()).getTime();
-                    fanInterstitialAd.show();
-                }
-
-                @Override
-                public void onAdClicked(Ad ad) {
-                }
-
-                @Override
-                public void onLoggingImpression(Ad ad) {
-                }
-            };
-
-            // load ads
-            fanInterstitialAd.loadAd(fanInterstitialAd.buildLoadAdConfig().withAdListener(interstitialAdListener).build());
-
-        } else if ((type == IRONSOURCE || type == FAN_BIDDING_IRONSOURCE) && ad_replace_unsupported_open_app_with_interstitial_on_splash) {
+        } else if ((type == IRONSOURCE ) && ad_replace_unsupported_open_app_with_interstitial_on_splash) {
             IronSource.setLevelPlayInterstitialListener(new LevelPlayInterstitialListener() {
                 @Override
                 public void onAdReady(AdInfo adInfo) {
@@ -256,7 +211,7 @@ public class OpenAppAdFormat {
         AdNetworkType type = ad_networks[ad_index];
         isLoadingAd = true;
 
-        if (type == ADMOB || type == FAN_BIDDING_ADMOB) {
+        if (type == ADMOB) {
             Log.d(TAG, type + " loadOpenAppAd");
             AdRequest request = new AdRequest.Builder().build();
             String unit_id = ad_admob_open_app_unit_id;
@@ -279,7 +234,7 @@ public class OpenAppAdFormat {
                 }
 
             });
-        } else if (type == MANAGER || type == FAN_BIDDING_AD_MANAGER) {
+        } else if (type == MANAGER) {
             @SuppressLint("VisibleForTests") AdManagerAdRequest adManagerAdRequest = new AdManagerAdRequest.Builder().build();
             com.google.android.gms.ads.appopen.AppOpenAd.load(context, ad_manager_open_app_unit_id, adManagerAdRequest, new com.google.android.gms.ads.appopen.AppOpenAd.AppOpenAdLoadCallback() {
                 @Override
@@ -340,10 +295,10 @@ public class OpenAppAdFormat {
 
         AdNetworkType type = ad_networks[last_open_app_index];
         lastShowTime = (new Date()).getTime();
-        if (type == ADMOB || type == FAN_BIDDING_ADMOB) {
+        if (type == ADMOB) {
             if (ad_admob_appOpenAd == null) return;
             ad_admob_appOpenAd.show(ActivityListener.currentActivity);
-        } else if (type == MANAGER || type == FAN_BIDDING_AD_MANAGER) {
+        } else if (type == MANAGER) {
             if (ad_manager_appOpenAd == null) return;
             ad_manager_appOpenAd.show(ActivityListener.currentActivity);
         }

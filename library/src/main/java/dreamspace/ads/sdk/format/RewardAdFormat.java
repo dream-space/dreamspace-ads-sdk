@@ -1,15 +1,10 @@
 package dreamspace.ads.sdk.format;
 
 import static dreamspace.ads.sdk.AdConfig.ad_admob_rewarded_unit_id;
-import static dreamspace.ads.sdk.AdConfig.ad_fan_rewarded_unit_id;
 import static dreamspace.ads.sdk.AdConfig.ad_ironsource_rewarded_unit_id;
 import static dreamspace.ads.sdk.AdConfig.ad_manager_rewarded_unit_id;
 import static dreamspace.ads.sdk.AdConfig.ad_networks;
 import static dreamspace.ads.sdk.data.AdNetworkType.ADMOB;
-import static dreamspace.ads.sdk.data.AdNetworkType.FAN;
-import static dreamspace.ads.sdk.data.AdNetworkType.FAN_BIDDING_ADMOB;
-import static dreamspace.ads.sdk.data.AdNetworkType.FAN_BIDDING_AD_MANAGER;
-import static dreamspace.ads.sdk.data.AdNetworkType.FAN_BIDDING_IRONSOURCE;
 import static dreamspace.ads.sdk.data.AdNetworkType.IRONSOURCE;
 import static dreamspace.ads.sdk.data.AdNetworkType.MANAGER;
 
@@ -19,9 +14,6 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.facebook.ads.Ad;
-import com.facebook.ads.AdError;
-import com.facebook.ads.RewardedVideoAdListener;
 import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
@@ -43,7 +35,6 @@ public class RewardAdFormat {
 
     private com.google.android.gms.ads.rewarded.RewardedAd adMobRewardedAd;
     private com.google.android.gms.ads.rewarded.RewardedAd adManagerRewardedAd;
-    private com.facebook.ads.RewardedVideoAd fanRewardedVideoAd;
 
     private static int last_reward_index = 0;
 
@@ -59,7 +50,7 @@ public class RewardAdFormat {
         AdNetworkType type = ad_networks[ad_index];
         Log.d(TAG, type.name() + " rewarded loadRewardAd");
 
-        if (type == ADMOB || type == FAN_BIDDING_ADMOB) {
+        if (type == ADMOB) {
             com.google.android.gms.ads.rewarded.RewardedAd.load(activity, ad_admob_rewarded_unit_id, Tools.getAdRequest(activity), new RewardedAdLoadCallback() {
                 @Override
                 public void onAdLoaded(@NonNull com.google.android.gms.ads.rewarded.RewardedAd ad) {
@@ -90,7 +81,7 @@ public class RewardAdFormat {
                     retryLoadReward(ad_index, retry_count, listener);
                 }
             });
-        } else if (type == MANAGER || type == FAN_BIDDING_AD_MANAGER) {
+        } else if (type == MANAGER) {
             com.google.android.gms.ads.rewarded.RewardedAd.load(activity, ad_manager_rewarded_unit_id, Tools.getGoogleAdManagerRequest(), new RewardedAdLoadCallback() {
                 @Override
                 public void onAdLoaded(@NonNull com.google.android.gms.ads.rewarded.RewardedAd ad) {
@@ -121,44 +112,7 @@ public class RewardAdFormat {
                     retryLoadReward(ad_index, retry_count, listener);
                 }
             });
-        } else if (type == FAN) {
-            fanRewardedVideoAd = new com.facebook.ads.RewardedVideoAd(activity, ad_fan_rewarded_unit_id);
-            fanRewardedVideoAd.loadAd(fanRewardedVideoAd.buildLoadAdConfig().withAdListener(new RewardedVideoAdListener() {
-                @Override
-                public void onRewardedVideoCompleted() {
-                    Log.d(TAG, type.name() + " rewarded onComplete");
-                    listener.onComplete();
-                }
-
-                @Override
-                public void onRewardedVideoClosed() {
-                    Log.d(TAG, type.name() + " rewarded onRewardedVideoClosed");
-                    retryLoadReward(ad_index, retry_count, listener);
-                    listener.onDismissed();
-                }
-
-                @Override
-                public void onError(Ad ad, AdError adError) {
-                    Log.d(TAG, type.name() + " rewarded onError : " + adError.getErrorMessage());
-                    retryLoadReward(ad_index, retry_count, listener);
-                }
-
-                @Override
-                public void onAdLoaded(Ad ad) {
-                    Log.d(TAG, type.name() + " rewarded onAdLoaded");
-                }
-
-                @Override
-                public void onAdClicked(Ad ad) {
-
-                }
-
-                @Override
-                public void onLoggingImpression(Ad ad) {
-
-                }
-            }).build());
-        } else if (type == IRONSOURCE || type == FAN_BIDDING_IRONSOURCE) {
+        } else if (type == IRONSOURCE) {
             IronSource.setLevelPlayRewardedVideoListener(new LevelPlayRewardedVideoListener() {
                 @Override
                 public void onAdAvailable(AdInfo adInfo) {
@@ -205,7 +159,7 @@ public class RewardAdFormat {
     public boolean showRewardAd(AdRewardedListener listener) {
         AdNetworkType type = ad_networks[last_reward_index];
 
-        if (type == ADMOB || type == FAN_BIDDING_ADMOB) {
+        if (type == ADMOB) {
             if (adMobRewardedAd != null) {
                 adMobRewardedAd.show(activity, rewardItem -> {
                     listener.onComplete();
@@ -214,7 +168,7 @@ public class RewardAdFormat {
             } else {
                 listener.onError();
             }
-        } else if (type == MANAGER || type == FAN_BIDDING_AD_MANAGER) {
+        } else if (type == MANAGER) {
             if (adManagerRewardedAd != null) {
                 adManagerRewardedAd.show(activity, rewardItem -> {
                     listener.onComplete();
@@ -223,13 +177,7 @@ public class RewardAdFormat {
             } else {
                 listener.onError();
             }
-        } else if (type == FAN) {
-            if (fanRewardedVideoAd != null && fanRewardedVideoAd.isAdLoaded()) {
-                fanRewardedVideoAd.show();
-            } else {
-                listener.onError();
-            }
-        } else if (type == IRONSOURCE || type == FAN_BIDDING_IRONSOURCE) {
+        } else if (type == IRONSOURCE) {
             if (IronSource.isRewardedVideoAvailable()) {
                 IronSource.showRewardedVideo(ad_ironsource_rewarded_unit_id);
             } else {
