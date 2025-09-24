@@ -4,12 +4,12 @@ plugins {
 
 android {
     namespace 'dreamspace.ads.sdk.demo'
-    compileSdk 34
+    compileSdk = 36
 
     defaultConfig {
         applicationId "dreamspace.ads.sdk"
-        minSdk 21
-        targetSdk 34
+        minSdk 23
+        targetSdk 36
         versionCode 1
         versionName "1.0"
 
@@ -24,8 +24,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
     lintOptions {
         disable 'GradleDependency', 'ExpiringTargetSdkVersion'
@@ -35,8 +35,8 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.aar', '*.jar'], exclude: [])
     implementation 'androidx.multidex:multidex:2.0.1'
-    implementation 'androidx.appcompat:appcompat:1.5.1'
-    implementation 'com.google.android.material:material:1.7.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.appcompat:appcompat:1.7.1'
+    implementation 'com.google.android.material:material:1.13.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
     implementation project(':library')
 }
