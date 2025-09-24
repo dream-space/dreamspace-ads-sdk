@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -30,13 +31,15 @@
             android:name="com.ironsource.sdk.controller.InterstitialActivity"
             android:configChanges="orientation|screenSize"
             android:hardwareAccelerated="true"
-            android:theme="@android:style/Theme.Translucent" />
+            android:theme="@android:style/Theme.Translucent"
+            tools:replace="android:theme"/>
 
         <activity
             android:name="com.ironsource.sdk.controller.OpenUrlActivity"
             android:configChanges="orientation|screenSize"
             android:hardwareAccelerated="true"
-            android:theme="@android:style/Theme.Translucent" />
+            android:theme="@android:style/Theme.Translucent"
+            tools:replace="android:theme" />
 
         <provider
             android:name="com.ironsource.lifecycle.IronsourceLifecycleProvider"

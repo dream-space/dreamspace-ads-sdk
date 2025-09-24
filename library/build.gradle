@@ -5,11 +5,11 @@ plugins {
 
 android {
     namespace 'dreamspace.ads.sdk'
-    compileSdk 34
+    compileSdk = 36
 
     defaultConfig {
-        minSdk 21
-        targetSdk 34
+        minSdk 23
+        targetSdk 36
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -38,31 +38,27 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.aar', '*.jar'], exclude: [])
     implementation 'androidx.multidex:multidex:2.0.1'
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.12.0'
-    implementation 'com.google.android.gms:play-services-ads-identifier:18.1.0'
+    implementation 'androidx.appcompat:appcompat:1.7.1'
+    implementation 'com.google.android.material:material:1.13.0'
+    implementation 'com.google.android.gms:play-services-ads-identifier:18.2.0'
     implementation 'com.google.android.gms:play-services-appset:16.1.0'
-    implementation 'com.google.android.gms:play-services-basement:18.4.0'
+    implementation 'com.google.android.gms:play-services-basement:18.8.0'
 
-    implementation 'androidx.lifecycle:lifecycle-process:2.5.1'
-    implementation 'androidx.lifecycle:lifecycle-runtime:2.5.1'
-    implementation 'androidx.lifecycle:lifecycle-common-java8:2.5.1'
+    implementation 'androidx.lifecycle:lifecycle-process:2.9.4'
+    implementation 'androidx.lifecycle:lifecycle-runtime:2.9.4'
+    implementation 'androidx.lifecycle:lifecycle-common-java8:2.9.4'
 
     // ump sdk
-    implementation 'com.google.android.ump:user-messaging-platform:2.2.0'
+    implementation 'com.google.android.ump:user-messaging-platform:3.2.0'
 
     //Ad Networks
-    implementation 'com.google.android.gms:play-services-ads:22.5.0'
-    implementation 'com.facebook.android:audience-network-sdk:6.17.0'
+    implementation 'com.google.android.gms:play-services-ads:24.6.0'
+    implementation 'com.facebook.android:audience-network-sdk:6.20.0'
     implementation 'com.ironsource.sdk:mediationsdk:8.4.0'
-
-    //AdMob mediation
-    implementation 'com.google.ads.mediation:unity:4.12.1.0'
-    implementation 'com.google.ads.mediation:ironsource:8.1.0.0'
-    implementation 'com.google.ads.mediation:facebook:6.17.0.0'
+    implementation 'com.ironsource.adapters:admobadapter:4.3.46'
 
     //GDPR
-    implementation 'com.google.android.ump:user-messaging-platform:2.2.0'
+    implementation 'com.google.android.ump:user-messaging-platform:3.2.0'
     implementation 'com.google.android.ads.consent:consent-library:1.0.8'
 }
 
