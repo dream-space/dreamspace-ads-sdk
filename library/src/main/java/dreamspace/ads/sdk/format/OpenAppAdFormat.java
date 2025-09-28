@@ -49,7 +49,7 @@ public class OpenAppAdFormat {
     private static long loadTime = 0;
     private static long lastShowTime = 0;
 
-    public static int last_open_app_index = -1;
+    public static int last_open_app_index = 1;
     public static AppOpenAd ad_admob_appOpenAd = null;
     public static com.google.android.gms.ads.appopen.AppOpenAd ad_manager_appOpenAd = null;
     private static ActivityListener activityListener = null;
