@@ -4,23 +4,23 @@
 
 <code>
 git checkout main
-git tag 4.0.13-all
-git push origin 4.0.13-all
+git tag 4.0.15-all
+git push origin 4.0.15-all
 
 git checkout admob-fan
-git tag 4.0.13-admob-fan
-git push origin 4.0.13-admob-fan
+git tag 4.0.15-admob-fan
+git push origin 4.0.15-admob-fan
 
 git checkout admob-is
-git tag 4.0.13-admob-is
-git push origin 4.0.13-admob-is
+git tag 4.0.15-admob-is
+git push origin 4.0.15-admob-is
 
 git checkout admob-only
-git tag 4.0.13-admob-only
-git push origin 4.0.13-admob-only
+git tag 4.0.15-admob-only
+git push origin 4.0.15-admob-only
 
 git checkout none
-git tag 4.0.13-none
-git push origin 4.0.13-none
+git tag 4.0.15-none
+git push origin 4.0.15-none
 
 </code>
