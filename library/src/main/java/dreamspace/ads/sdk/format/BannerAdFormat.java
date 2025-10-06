@@ -25,8 +25,6 @@ import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.admanager.AdManagerAdView;
-import com.ironsource.mediationsdk.IronSource;
-import com.ironsource.mediationsdk.IronSourceBannerLayout;
 
 import java.util.List;
 
@@ -40,7 +38,6 @@ public class BannerAdFormat {
 
     private final Activity activity;
     private LinearLayout adContainer;
-    private IronSourceBannerLayout ironSourceBannerLayout;
     public BannerAdFormat(Activity activity) {
         this.activity = activity;
     }
