@@ -5,11 +5,11 @@ plugins {
 
 android {
     namespace 'dreamspace.ads.sdk'
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         minSdk 23
-        targetSdk 36
+        targetSdk 37
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -48,12 +48,17 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-runtime:2.9.4'
     implementation 'androidx.lifecycle:lifecycle-common-java8:2.9.4'
 
+    // ump sdk
+    implementation 'com.google.android.ump:user-messaging-platform:3.2.0'
+
     //Ad Networks
     implementation 'com.google.android.gms:play-services-ads:24.6.0'
+    implementation 'com.facebook.android:audience-network-sdk:6.20.0'
+    implementation 'com.ironsource.sdk:mediationsdk:8.11.1'
+    implementation 'com.ironsource.adapters:admobadapter:4.3.46'
 
     //GDPR
     implementation 'com.google.android.ump:user-messaging-platform:3.2.0'
-    implementation 'com.google.android.ads.consent:consent-library:1.0.8'
 }
 
 afterEvaluate {
@@ -73,7 +78,7 @@ afterEvaluate {
                 from components.findByName('release')
                 groupId = "dream-space"
                 artifactId = "dreamspace.ads.sdk"
-                version = "4.0.7-admob-only"
+                version = "4.0.17-admon-only"
             }
         }
     }
