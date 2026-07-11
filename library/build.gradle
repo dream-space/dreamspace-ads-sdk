@@ -10,8 +10,6 @@ android {
     defaultConfig {
         minSdk 23
         targetSdk 37
-
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
         multiDexEnabled true
     }
@@ -32,6 +30,10 @@ android {
     }
     lintOptions {
         disable 'GradleDependency', 'ExpiringTargetSdkVersion'
+    }
+
+    publishing {
+        singleVariant("release")
     }
 }
 
@@ -63,22 +65,9 @@ dependencies {
 
 afterEvaluate {
     publishing {
-        repositories {
-            maven {
-                name = "GitHubPackages"
-                url = uri("https://maven.pkg.github.com/dream-space/dreamspace-ads-sdk")
-                credentials {
-                    username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
-                    password = project.findProperty("gpr.key") ?: System.getenv("PASSWORD")
-                }
-            }
-        }
         publications {
             release(MavenPublication) {
-                from components.findByName('release')
-                groupId = "dream-space"
-                artifactId = "dreamspace.ads.sdk"
-                version = "4.0.17-admon-only"
+                from components.release
             }
         }
     }
