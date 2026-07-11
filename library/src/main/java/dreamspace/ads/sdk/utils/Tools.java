@@ -11,7 +11,6 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 
-import com.google.ads.mediation.admob.AdMobAdapter;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.admanager.AdManagerAdRequest;
@@ -21,7 +20,6 @@ import java.util.List;
 
 import dreamspace.ads.sdk.AdNetwork;
 import dreamspace.ads.sdk.data.AdNetworkType;
-import dreamspace.ads.sdk.gdpr.LegacyGDPR;
 
 public class Tools {
 
@@ -46,7 +44,6 @@ public class Tools {
     public static AdRequest getAdRequest(Activity activity) {
         //Bundle extras = new FacebookExtras().setNativeBanner(true).build();
         return new AdRequest.Builder()
-                .addNetworkExtrasBundle(AdMobAdapter.class, LegacyGDPR.getBundleAd(activity))
                 //.addNetworkExtrasBundle(FacebookAdapter.class, extras)
                 .build();
     }
