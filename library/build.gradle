@@ -5,11 +5,11 @@ plugins {
 
 android {
     namespace 'dreamspace.ads.sdk'
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         minSdk 23
-        targetSdk 36
+        targetSdk 37
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -59,7 +59,7 @@ afterEvaluate {
                 from components.findByName('release')
                 groupId = "dream-space"
                 artifactId = "dreamspace.ads.sdk"
-                version = "4.0.7-none"
+                version = "4.0.17-none"
             }
         }
     }
